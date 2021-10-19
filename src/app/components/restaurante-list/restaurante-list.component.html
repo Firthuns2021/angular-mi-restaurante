@@ -1,0 +1,5 @@
+<h3>Restaurantes</h3>
+<p *ngFor="let r of restaurantes">
+    {{r.nombre}}:
+  <img [src]=" r.imgLogo" alt="{{r.nombre}}" [title]=" r.nombre "   width="150" height="100">
+</p>
