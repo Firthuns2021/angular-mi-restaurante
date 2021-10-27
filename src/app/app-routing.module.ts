@@ -3,7 +3,10 @@ import { RouterModule, Routes } from '@angular/router';
 import {RestauranteListComponent} from './components/restaurante-list/restaurante-list.component';
 
 const routes: Routes = [
-  // { path: '', component: RestauranteListComponent}
+  { path: '', pathMatch: 'full', component: RestauranteListComponent },
+  { path: 'restaurantes',  redirectTo: '' },
+  { path: 'categoria/:id',  component: RestauranteListComponent },
+  { path: '**',   redirectTo: '', pathMatch: 'full' },
 ];
 
 @NgModule({

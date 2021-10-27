@@ -1,8 +1,15 @@
 <div class="container">
-  <h1 class="mt-3 mb-3">Restaurantes</h1>
+  <app-navigation></app-navigation>
+  <div class="row">
+    <div class="col-md-2 border-end">
+      <app-sidebar></app-sidebar>
+    </div>
+    <div class="col-md-10">
+      <router-outlet></router-outlet>
+    </div>
+  </div>
 
-<app-restaurante-list></app-restaurante-list>
 </div>
 
 
-<router-outlet></router-outlet>
+

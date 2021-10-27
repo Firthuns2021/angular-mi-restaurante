@@ -5,11 +5,15 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { RestauranteListComponent } from './components/restaurante-list/restaurante-list.component';
 import {HttpClientModule} from '@angular/common/http';
+import { SidebarComponent } from './components/sidebar/sidebar.component';
+import { NavigationComponent } from './components/navigation/navigation.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     RestauranteListComponent,
+    SidebarComponent,
+    NavigationComponent,
 
   ],
   imports: [
