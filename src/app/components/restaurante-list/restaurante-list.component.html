@@ -1,5 +1,25 @@
-<h3>Restaurantes</h3>
-<p *ngFor="let r of restaurantes">
-    {{r.nombre}}:
-  <img [src]=" r.imgLogo" alt="{{r.nombre}}" [title]=" r.nombre "   width="150" height="100">
-</p>
+<div class="container-fluid">
+  <h4 class="mt-2">{{ restaurantes.length}} restaurantes abiertos</h4>
+  <div class="container" *ngFor="let restaurante of restaurantes">
+
+    <div class="mt-3">
+    <div class="row border rounded mt-3">
+
+        <div class="col-md-2">
+          <img src="{{ restaurante.imgLogo }}" alt="{{ restaurante.nombre }}">
+        </div>
+        <div class="col-md-7">
+          <h5>{{ restaurante.nombre }}</h5>
+          <p class="text-danger"> Categoria</p>
+        </div>
+          <div class="col-md-3 align-middle">
+            <div class="small badge bg-success p-2">10</div>
+          </div>
+        <div class="pb-2"></div>
+        <div class="mb-2"></div>
+
+      </div>
+    </div>
+
+  </div>
+</div>

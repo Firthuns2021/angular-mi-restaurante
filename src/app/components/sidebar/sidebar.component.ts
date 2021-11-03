@@ -1,4 +1,6 @@
 import { Component, OnInit } from '@angular/core';
+import {RestauranteCategoria} from '../../common/restaurante-categoria';
+import {RestauranteService} from '../../services/restaurante.service';
 
 @Component({
   selector: 'app-sidebar',
@@ -7,9 +9,23 @@ import { Component, OnInit } from '@angular/core';
 })
 export class SidebarComponent implements OnInit {
 
-  constructor() { }
+  // Creamos el array de objetos restaurante categoria
+  categoriasRestaurante: RestauranteCategoria[] = [];
+
+
+  constructor( private  restauranteService: RestauranteService) { }
 
   ngOnInit(): void {
+    this.listCategoriasRestaurante();
   }
 
+  private listCategoriasRestaurante(): void {
+    // llamamos a la función del servicio y nos suscribimos
+    this.restauranteService.getCategoriasRestaurante().subscribe(
+      (resp: any) =>  {
+        console.log('sidebar:', resp);
+        this.categoriasRestaurante = resp;
+      }
+    );
+  }
 }
