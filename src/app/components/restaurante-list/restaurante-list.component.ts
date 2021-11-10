@@ -17,6 +17,8 @@ export class RestauranteListComponent implements OnInit {
   /*** Creamos la variable que gaurdará la categoria actual si tiene  */
   constructor(private restauranteService: RestauranteService,
               private activatedRoute: ActivatedRoute ) { }
+  /*** variable de búsqueda*/
+  searchMode = false;
 
   ngOnInit(): void {
     // nos subscribimos al activatedRoute para ver si hay parametros.
@@ -27,6 +29,31 @@ export class RestauranteListComponent implements OnInit {
   }
 
   listRestaurantes(): void {
+    // vemos si la Url tiene parámetro keyword
+    this.searchMode = this.activatedRoute.snapshot.paramMap.has('keyword');
+    // *** si tiene keyword, gestionamos la búsqueda
+    if ( this.searchMode){
+      this.handleSearchRestaurante();
+    }else{
+      this.handleListRestaurante();
+    }
+
+
+  }
+/*** Funcion que nos gestionará la busqueda */
+  private handleSearchRestaurante(): any {
+      const theKeyWord = this.activatedRoute.snapshot.paramMap.get('keyword');
+
+      if (theKeyWord) {
+    this.restauranteService.searchRestaurantes(theKeyWord).subscribe(
+      (data: any) => {
+        this.restaurantes = data;
+      }
+    );
+  }
+}
+
+  private handleListRestaurante(): void {
     // vemos si el parametro id existe
     const tieneCategoriaId = this.activatedRoute.snapshot.paramMap.has('id');
 
@@ -42,7 +69,6 @@ export class RestauranteListComponent implements OnInit {
         this.restaurantes = data;
       });
     }
-
 
   }
 }

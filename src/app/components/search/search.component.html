@@ -1,0 +1,5 @@
+
+<form class="d-flex" (submit)="doSearch(myInput.value)">
+  <input #myInput class="form-control me-2" type="search" placeholder="Buscar restaurante" aria-label="Search" (keyup.enter)="doSearch(myInput.value)">
+  <button class="btn btn-outline-success" type="submit">Buscar</button>
+</form>

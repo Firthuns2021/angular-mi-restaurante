@@ -7,6 +7,7 @@ import { RestauranteListComponent } from './components/restaurante-list/restaura
 import {HttpClientModule} from '@angular/common/http';
 import { SidebarComponent } from './components/sidebar/sidebar.component';
 import { NavigationComponent } from './components/navigation/navigation.component';
+import { SearchComponent } from './components/search/search.component';
 
 @NgModule({
   declarations: [
@@ -14,6 +15,7 @@ import { NavigationComponent } from './components/navigation/navigation.componen
     RestauranteListComponent,
     SidebarComponent,
     NavigationComponent,
+    SearchComponent,
 
   ],
   imports: [
