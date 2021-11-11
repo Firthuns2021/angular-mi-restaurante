@@ -3,10 +3,10 @@
      <span class="fs-5 fw-semibold">Restaurante </span>
    </a>
   <ul class="list-unstyled ps-0">
-    <li class="mb-1 " *ngFor="let cat of categoriasRestaurante">
+    <li class="mb-1 " *ngFor="let cat of categoriasRestaurante; let i = index">
       <button class="btn btn-outline-warning align-items-center rounded"
       aria-expanded="true" routerLink="/categoria/{{cat.id }}" routerLinkActive="active">
-        {{ cat.categoria }}
+        {{ cat.categoria?.categoria }}
       </button>
     </li>
 

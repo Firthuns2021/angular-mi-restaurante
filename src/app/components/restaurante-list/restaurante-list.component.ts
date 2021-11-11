@@ -46,9 +46,8 @@ export class RestauranteListComponent implements OnInit {
 
       if (theKeyWord) {
     this.restauranteService.searchRestaurantes(theKeyWord).subscribe(
-      (data: any) => {
-        this.restaurantes = data;
-      }
+      this.processResult()
+
     );
   }
 }
@@ -62,13 +61,47 @@ export class RestauranteListComponent implements OnInit {
       this.actualCategoriaID = this.activatedRoute.snapshot.paramMap.get('id') as unknown as number;
       // llamamos a nuestro servicio para q nos devuelva los restauranes de esta categoria
       this.restauranteService.getRestauranteListCat(this.actualCategoriaID).subscribe(
-        (data: any) => { this.restaurantes = data; }
+        this.processResult()
       );
     }else {
-      this.restauranteService.getRestauranteList().subscribe( (data: any) => {
-        this.restaurantes = data;
-      });
+      this.restauranteService.getRestauranteList().subscribe(
+        this.processResult()
+        );
     }
 
+  }
+
+
+
+
+  processResult(): any {
+    return (data: any) => {
+      this.restaurantes = data;
+      this.restaurantes.forEach(
+        restaurante => {
+          console.log('restaurante: ' + restaurante);
+          this.restauranteService.getCategoria(restaurante.id).subscribe(
+            cat => {
+              restaurante.categoria = cat;
+            });
+          this.restauranteService.getComentariosRestaurante(restaurante.id).subscribe(
+            coment => {
+              restaurante.comentarios = coment;
+              this.calcularMediaComentarios(restaurante);
+            });
+        });
+    };
+  }
+
+ private  calcularMediaComentarios(restaurante: Restaurante): void  {
+     let aux = 0;
+     restaurante.comentarios.forEach(
+       comentario => {
+         aux += comentario.puntuacion;
+       }
+     );
+     if (restaurante.comentarios.length > 0) {
+       restaurante.puntuacionMedia = aux / restaurante.comentarios.length;
+     } else { restaurante.puntuacionMedia = 0; }
   }
 }

@@ -4,6 +4,7 @@ import {Observable} from 'rxjs';
 import {Restaurante} from '../common/restaurante';
 import {map} from 'rxjs/operators';
 import {RestauranteCategoria} from '../common/restaurante-categoria';
+import {ComentarioRest} from '../common/comentario-rest';
 
 
 
@@ -63,6 +64,14 @@ export class RestauranteService {
     const urlCat = this.baseUrl + '/search/findByCategoriaId?id=' + laCategoria;
     return this.getRestaurantes(urlCat);
   }
+
+  getCategoria(idRestaurante: number): Observable<RestauranteCategoria>{
+
+      const catUrl = 'http://localhost:8080/api/restaurantes/';
+      return this.http.get<RestauranteCategoria>(`${catUrl +
+      idRestaurante }/categoria`);
+  }
+
   searchRestaurantes(theKeyword: string): Observable<Restaurante[]> {
 // creamos la url con la palabra clave
     const searchUrl = `${this.baseUrl}/search/findByNombreContaining?nombre=${theKeyword}`;
@@ -73,6 +82,21 @@ export class RestauranteService {
       map((response: any) => response._embedded.restaurantes)
     );
   }
+
+  // http://localhost:8080/api/restaurantes/2/comentariosRest
+  getComentariosRestaurante(restauranteId: number):
+    Observable<ComentarioRest[]> {
+    const comentariosRestUrl =
+      `${this.baseUrl}/${restauranteId}/comentariosRest`;
+    return this.http.get<GetResponseComentarios>(comentariosRestUrl).pipe(
+      map((response: any) => response._embedded.comentariosRest)
+    );
+  }
+
+
+
+
+
 }
 
 // defino la intergaz con la informaciónq ue viene d ela api rest
@@ -85,5 +109,11 @@ interface  GetResponse{
 interface  GetResponseCategoria{
   _embedded: {
     categorias: RestauranteCategoria[];
+  };
+}
+// interfaz de comentarios de Restaurante
+interface GetResponseComentarios{
+  _embedded: {
+    comentariosRest: ComentarioRest[];
   };
 }
