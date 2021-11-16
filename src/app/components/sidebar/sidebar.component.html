@@ -6,7 +6,7 @@
     <li class="mb-1 " *ngFor="let cat of categoriasRestaurante; let i = index">
       <button class="btn btn-outline-warning align-items-center rounded"
       aria-expanded="true" routerLink="/categoria/{{cat.id }}" routerLinkActive="active">
-        {{ cat.categoria?.categoria }}
+        {{ cat.categoria }}
       </button>
     </li>
 

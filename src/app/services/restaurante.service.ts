@@ -94,12 +94,27 @@ export class RestauranteService {
   }
 
 
+  getCategoriasRestaurante(): Observable<RestauranteCategoria[]> {
+    const catUrl = 'http://localhost:8080/api/categorias';
+    return this.http.get<GetResponseCategoria>(catUrl).pipe(
+      map((response: any) => response._embedded.categorias)
+    );
+  }
 
 
 
 }
 
+
+
 // defino la intergaz con la informaciónq ue viene d ela api rest
+interface GetResponseCategoria {
+  _embedded: {
+    categorias: RestauranteCategoria[];
+  };
+}
+
+
 interface  GetResponse{
   _embedded: {
     restaurantes: Restaurante[];

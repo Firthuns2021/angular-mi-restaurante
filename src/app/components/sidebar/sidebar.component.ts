@@ -22,7 +22,7 @@ export class SidebarComponent implements OnInit {
 
   private listCategoriasRestaurante(): void {
     // llamamos a la función del servicio y nos suscribimos
-    this.restauranteService.getRestauranteList().subscribe(
+    this.restauranteService.getCategoriasRestaurante().subscribe(
       (resp: any) =>  {
         console.log('sidebar:', resp);
         this.categoriasRestaurante = resp;
