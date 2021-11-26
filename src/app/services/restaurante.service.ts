@@ -5,6 +5,7 @@ import {Restaurante} from '../common/restaurante';
 import {map} from 'rxjs/operators';
 import {RestauranteCategoria} from '../common/restaurante-categoria';
 import {ComentarioRest} from '../common/comentario-rest';
+import {PlatoRestuarante} from '../common/plato-restuarante';
 
 
 
@@ -102,6 +103,18 @@ export class RestauranteService {
   }
 
 
+  getRestaurante(restauranteID: number): Observable<Restaurante>{
+    const restURL = `${this.baseUrl}/${restauranteID}`;
+
+    return this.http.get<Restaurante>(restURL);
+  }
+
+
+  getPlatosRestaurante(restauranteID: number): Observable<PlatoRestuarante[]>{
+    const platosResturanteURL = `${this.baseUrl}/${restauranteID}/platosRestaurante`;
+    return this.http.get<GetResponsePlatoRestautante>(platosResturanteURL).pipe(
+      map( (response: any) => response._embedded.platosRestaurante )    );
+  }
 
 }
 
@@ -132,3 +145,11 @@ interface GetResponseComentarios{
     comentariosRest: ComentarioRest[];
   };
 }
+interface GetResponsePlatoRestautante{
+  _embedded: {
+    platosRestaurante: PlatoRestuarante[];
+  };
+}
+
+
+

@@ -1,0 +1,33 @@
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-md-9">
+        <div class="card">
+          <div class="card-img-top">
+            <div class="card-header">
+              <img *ngIf="restaurante.imgLogo"
+                src="{{restaurante.imgLogo}}" alt="No imagen">
+<!--              ../../../assets/images/noimagen.png-->
+            </div>
+          </div>
+          <div class="card-body">
+            <div class="card-title">
+              {{restaurante.localizacion }}
+            </div>
+            <div class="card-text">
+              Horario:
+            </div>
+          </div>
+        </div>
+      <h3 class="met-4">Platos</h3>
+      <div *ngFor="let plato of platosRestaurante"
+        class="row border rounded pt-3 pb-3 mt-3 mb-3">
+          <h5>{{ plato.nombre }}</h5>
+        <p> {{ plato.descripcion }}</p>
+        <small class="text-info">{{ plato.precioBase | currency: '€' }}</small>
+      </div>
+    </div>
+    <div class="col-md-3 offset-6 fixed">
+      Carrito
+    </div>
+  </div>
+</div>

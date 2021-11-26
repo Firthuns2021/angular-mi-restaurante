@@ -1,6 +1,7 @@
 <div class="container-fluid" *ngIf="restaurantes.length > 0">
   <h4 class="mt-2">{{ restaurantes.length}} restaurantes abiertos</h4>
-  <div class="container" *ngFor="let restaurante of restaurantes">
+  <div class="container pointer" routerLink="/restaurante/{{restaurante.id}}"
+       *ngFor="let restaurante of restaurantes">
 
     <div class="mt-3">
       <div class="row border rounded">

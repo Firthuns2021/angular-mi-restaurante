@@ -4,3 +4,6 @@ img{
 .border{
   box-shadow: 2px 2px lightgrey;
 }
+.pointer:hover{
+  cursor: pointer;
+}
