@@ -103,18 +103,28 @@ export class RestauranteService {
   }
 
 
-  getRestaurante(restauranteID: number): Observable<Restaurante>{
-    const restURL = `${this.baseUrl}/${restauranteID}`;
+  getRestaurante(restauranteId: number): Observable<Restaurante>{
+    const restauranteUrl = `${this.baseUrl}/${restauranteId}`;
 
-    return this.http.get<Restaurante>(restURL);
+    return this.http.get<Restaurante>(restauranteUrl);
   }
 
 
   getPlatosRestaurante(restauranteID: number): Observable<PlatoRestuarante[]>{
+
     const platosResturanteURL = `${this.baseUrl}/${restauranteID}/platosRestaurante`;
-    return this.http.get<GetResponsePlatoRestautante>(platosResturanteURL).pipe(
+    return this.http.get<GetResponsePlatoRestaurante>(platosResturanteURL).pipe(
       map( (response: any) => response._embedded.platosRestaurante )    );
   }
+
+  getRestauranteListPaginate(thePage: number, thePageSize: number): Observable<GetResponse> {
+    return this.http.get<GetResponse>(`${this.baseUrl}?page=${thePage}&size=${thePageSize}` );
+  }
+  getRestauranteListCatPaginate(thePage: number, thePageSize: number, theCategoriaId: number): Observable<GetResponse> {
+    const url =  `${this.baseUrl}/search/findByCategoriaId?id=${theCategoriaId}&page=${thePage}&size = ${thePageSize}`;
+    return this.http.get<GetResponse>(url);
+  }
+
 
 }
 
@@ -145,11 +155,24 @@ interface GetResponseComentarios{
     comentariosRest: ComentarioRest[];
   };
 }
-interface GetResponsePlatoRestautante{
+// interfaz de plato restaurante
+interface GetResponsePlatoRestaurante {
   _embedded: {
     platosRestaurante: PlatoRestuarante[];
   };
 }
 
+
+interface GetResponsePag {
+  _embedded: {
+    restaurantes: Restaurante[];
+  };
+  page: {
+    size: number,
+    totalElements: number,
+    totalPages: number,
+    number: number
+  };
+}
 
 

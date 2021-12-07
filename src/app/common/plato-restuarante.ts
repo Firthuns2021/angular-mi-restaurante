@@ -11,7 +11,7 @@ export class PlatoRestuarante {
       coste: number;
     }
   ];
-  comentariosPlatos: [{
+  comentariosPlato: [{
     email: string;
     comentario: string;
     puntuacion: number;
@@ -26,6 +26,6 @@ export class PlatoRestuarante {
     this.alergenos = [{alergeno: ''}];
     this.imgPlato = [{imagen: ''}];
     this.extras = [{ nombre: '', coste: 0}];
-    this.comentariosPlatos = [{ email: '', comentario: '', puntuacion: 0 }];
+    this.comentariosPlato = [{ email: '', comentario: '', puntuacion: 0 }];
   }
 }

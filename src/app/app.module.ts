@@ -9,6 +9,7 @@ import { SidebarComponent } from './components/sidebar/sidebar.component';
 import { NavigationComponent } from './components/navigation/navigation.component';
 import { SearchComponent } from './components/search/search.component';
 import { RestauranteDetalleComponent } from './components/restaurante-detalle/restaurante-detalle.component';
+import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 
 @NgModule({
   declarations: [
@@ -23,7 +24,9 @@ import { RestauranteDetalleComponent } from './components/restaurante-detalle/re
   imports: [
     BrowserModule,
     AppRoutingModule,
-    HttpClientModule
+    HttpClientModule,
+    NgbModule,
+
   ],
   providers: [],
   bootstrap: [AppComponent]

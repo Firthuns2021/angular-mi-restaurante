@@ -12,20 +12,32 @@ import {PlatoRestuarante} from '../../common/plato-restuarante';
 })
 export class RestauranteDetalleComponent implements OnInit {
 
-  restaurante: Restaurante = new Restaurante();
+
   platosRestaurante: PlatoRestuarante[] = [];
+
+  platos: PlatoRestuarante[] = [];
+  restaurante: Restaurante = new Restaurante();
 
   constructor(private restauranteService: RestauranteService,
               private activatedRoute: ActivatedRoute ) { }
 
   ngOnInit(): void {
     this.activatedRoute.paramMap.subscribe( () => {
-      const restauranteID = this.activatedRoute.snapshot.paramMap.get('id') as unknown as number;
-
-      this.handleRestaurante( restauranteID );
-      this.handlePlatos( restauranteID );
+      const restauranteId = this.activatedRoute.snapshot.paramMap.get('id') as unknown as number;
+      this.handleRestaurantes(restauranteId);
+      this.handlePlatos(restauranteId);
     });
   }
+
+  handleRestaurantes(restauranteId: number): void {
+
+    this.restauranteService.getRestaurante(restauranteId).subscribe(
+      (data: any) => {
+        this.restaurante = data;
+      }
+    );
+  }
+
 
   private handleRestaurante(restauranteID: number): void {
 
@@ -35,10 +47,10 @@ export class RestauranteDetalleComponent implements OnInit {
         });
   }
 
-  private handlePlatos(restauranteID: number): void {
+   handlePlatos(restauranteID: number): void {
     this.restauranteService.getPlatosRestaurante( restauranteID).subscribe( (data: any) => {
-      this.platosRestaurante = data;
-      this.restaurante.platosRestaurante = this.platosRestaurante;
+      this.platos = data;
+      this.restaurante.platosRestaurante = data;
     });
   }
 }

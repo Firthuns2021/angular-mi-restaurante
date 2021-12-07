@@ -14,6 +14,11 @@ export class RestauranteListComponent implements OnInit {
   restaurantes: Restaurante[] = [];
   actualCategoriaID = 0;
 
+  // creamos las variables para paginación
+  thePageNumber = 1;
+  thePageSize = 10;
+  theTotalElements = 0;
+
   /*** Creamos la variable que gaurdará la categoria actual si tiene  */
   constructor(private restauranteService: RestauranteService,
               private activatedRoute: ActivatedRoute ) { }
@@ -35,7 +40,7 @@ export class RestauranteListComponent implements OnInit {
     if ( this.searchMode){
       this.handleSearchRestaurante();
     }else{
-      this.handleListRestaurante();
+      this.handleListRestaurantes();
     }
 
 
@@ -52,45 +57,67 @@ export class RestauranteListComponent implements OnInit {
   }
 }
 
-  private handleListRestaurante(): void {
-    // vemos si el parametro id existe
+  handleListRestaurantes(): void {
+// antigua listRestaurantes()
+// vemos si el parámetro id existe
     const tieneCategoriaId = this.activatedRoute.snapshot.paramMap.has('id');
-
-    if (tieneCategoriaId){
-      // tiene id, lo cogemos y lo guardamos como number
-      this.actualCategoriaID = this.activatedRoute.snapshot.paramMap.get('id') as unknown as number;
-      // llamamos a nuestro servicio para q nos devuelva los restauranes de esta categoria
-      this.restauranteService.getRestauranteListCat(this.actualCategoriaID).subscribe(
-        this.processResult()
-      );
-    }else {
-      this.restauranteService.getRestauranteList().subscribe(
-        this.processResult()
-        );
+    if (tieneCategoriaId) {
+// si tiene id, cogemos ese id y lo convertimos a número
+      this.actualCategoriaID = this.activatedRoute.snapshot.paramMap.get('id') as
+        unknown as number;
+// this.thePageNumber - 1 porque en Angular es 1 based y en Spring 0 based
+      this.restauranteService.getRestauranteListCatPaginate(this.thePageNumber - 1,
+        this.thePageSize, this.actualCategoriaID)
+        .subscribe(this.processResult());
     }
-
+    else {
+// Con paginación
+      this.restauranteService.getRestauranteListPaginate(
+        this.thePageNumber - 1,
+        this.thePageSize).subscribe(this.processResult());
+    }
   }
 
 
 
 
+  // processResult(): any {
+  //   return (data: any) => {
+  //     this.restaurantes = data;
+  //     this.restaurantes.forEach(
+  //       restaurante => {
+  //         console.log('restaurante: ' + restaurante);
+  //         this.restauranteService.getCategoria(restaurante.id).subscribe(
+  //           cat => {
+  //             restaurante.categoria = cat;
+  //           });
+  //         this.restauranteService.getComentariosRestaurante(restaurante.id).subscribe(
+  //           coment => {
+  //             restaurante.comentarios = coment;
+  //             this.calcularMediaComentarios(restaurante);
+  //           });
+  //       });
+  //   };
+  // }
   processResult(): any {
     return (data: any) => {
-      this.restaurantes = data;
-      this.restaurantes.forEach(
-        restaurante => {
-          console.log('restaurante: ' + restaurante);
-          this.restauranteService.getCategoria(restaurante.id).subscribe(
-            cat => {
-              restaurante.categoria = cat;
-            });
-          this.restauranteService.getComentariosRestaurante(restaurante.id).subscribe(
-            coment => {
-              restaurante.comentarios = coment;
-              this.calcularMediaComentarios(restaurante);
-            });
-        });
+      this.restaurantes = data._embedded.restaurantes;
+// de nuevo Spring 0 based y Angular 1 based
+      this.thePageNumber = data.page.number + 1;
+      this.thePageSize = data.page.size;
+      this.theTotalElements = data.page.totalElements;
     };
+  }
+
+  updatePageSize(event: any): void {
+// seleccionamos el valor del select y lo asignamos a nuestra variable
+    if (event.target.value) {
+      this.thePageSize = event.target.value;
+    }
+// reiniciamos la página a la 1
+    this.thePageNumber = 1;
+// volvemos a cargar los restaurantes
+    this.listRestaurantes();
   }
 
  private  calcularMediaComentarios(restaurante: Restaurante): void  {
