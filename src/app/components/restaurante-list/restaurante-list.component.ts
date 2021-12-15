@@ -50,8 +50,8 @@ export class RestauranteListComponent implements OnInit {
       const theKeyWord = this.activatedRoute.snapshot.paramMap.get('keyword');
 
       if (theKeyWord) {
-    this.restauranteService.searchRestaurantes(theKeyWord).subscribe(
-      this.processResult()
+    this.restauranteService.searchRestaurantesPaginate(this.thePageNumber -1 , this.thePageSize, theKeyWord).subscribe(
+      this.processResultPaginate()
 
     );
   }
@@ -81,24 +81,7 @@ export class RestauranteListComponent implements OnInit {
 
 
 
-  // processResult(): any {
-  //   return (data: any) => {
-  //     this.restaurantes = data;
-  //     this.restaurantes.forEach(
-  //       restaurante => {
-  //         console.log('restaurante: ' + restaurante);
-  //         this.restauranteService.getCategoria(restaurante.id).subscribe(
-  //           cat => {
-  //             restaurante.categoria = cat;
-  //           });
-  //         this.restauranteService.getComentariosRestaurante(restaurante.id).subscribe(
-  //           coment => {
-  //             restaurante.comentarios = coment;
-  //             this.calcularMediaComentarios(restaurante);
-  //           });
-  //       });
-  //   };
-  // }
+
   processResult(): any {
     return (data: any) => {
       this.restaurantes = data._embedded.restaurantes;
@@ -120,7 +103,7 @@ export class RestauranteListComponent implements OnInit {
     this.listRestaurantes();
   }
 
- private  calcularMediaComentarios(restaurante: Restaurante): void  {
+   calcularMediaComentarios(restaurante: Restaurante): void  {
      let aux = 0;
      restaurante.comentarios.forEach(
        comentario => {
@@ -131,4 +114,25 @@ export class RestauranteListComponent implements OnInit {
        restaurante.puntuacionMedia = aux / restaurante.comentarios.length;
      } else { restaurante.puntuacionMedia = 0; }
   }
+
+  // tslint:disable-next-line:typedef
+  private processResultPaginate() {
+      return(data: any) => {
+        this.restaurantes = data._embedded.restaurantes;
+        this.restaurantes.forEach(
+          restaurante => {
+            this.restauranteService.getCategoria(restaurante.id).subscribe( cat => {
+              restaurante.categoria = cat;
+            });
+            this.restauranteService.getComentariosRestaurante( restaurante.id).subscribe( comment => {
+                restaurante.comentarios = comment;
+                this.calcularMediaComentarios(restaurante);
+            });
+          }
+        );
+      };
+  }
+
+  // tslint:disable-next-line:typedef
+
 }

@@ -4,6 +4,7 @@ import {RestauranteService} from '../../services/restaurante.service';
 import {ActivatedRoute} from '@angular/router';
 import {unwrapResolvedMetadata} from '@angular/compiler';
 import {PlatoRestuarante} from '../../common/plato-restuarante';
+import {ImgRestaurante} from '../../common/img-restaurante';
 
 @Component({
   selector: 'app-restaurante-detalle',
@@ -17,6 +18,7 @@ export class RestauranteDetalleComponent implements OnInit {
 
   platos: PlatoRestuarante[] = [];
   restaurante: Restaurante = new Restaurante();
+  imagenes: ImgRestaurante[] = [];
 
   constructor(private restauranteService: RestauranteService,
               private activatedRoute: ActivatedRoute ) { }
@@ -26,6 +28,7 @@ export class RestauranteDetalleComponent implements OnInit {
       const restauranteId = this.activatedRoute.snapshot.paramMap.get('id') as unknown as number;
       this.handleRestaurantes(restauranteId);
       this.handlePlatos(restauranteId);
+      this.handleImagenes(restauranteId);
     });
   }
 
@@ -51,6 +54,12 @@ export class RestauranteDetalleComponent implements OnInit {
     this.restauranteService.getPlatosRestaurante( restauranteID).subscribe( (data: any) => {
       this.platos = data;
       this.restaurante.platosRestaurante = data;
+    });
+  }
+
+  private handleImagenes(restauranteId: number) {
+    this.restauranteService.getImagenesRestaurante( restauranteId).subscribe(  (data: any)=> {
+      this.imagenes= data;
     });
   }
 }

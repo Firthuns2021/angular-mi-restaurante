@@ -6,6 +6,7 @@ import {map} from 'rxjs/operators';
 import {RestauranteCategoria} from '../common/restaurante-categoria';
 import {ComentarioRest} from '../common/comentario-rest';
 import {PlatoRestuarante} from '../common/plato-restuarante';
+import {ImgRestaurante} from '../common/img-restaurante';
 
 
 
@@ -117,13 +118,30 @@ export class RestauranteService {
       map( (response: any) => response._embedded.platosRestaurante )    );
   }
 
+  getImagenesRestaurante(restauranteID: number ): Observable<ImgRestaurante[]>{
+    const imagenesRestUrl = `${this.baseUrl}/${restauranteID}/imgsRestaurante`;
+    // ojo si falla la url imgRestaurante sin s
+    return this.http.get<GetResponseImagenes>( imagenesRestUrl).pipe(
+      map( ( response: any) =>    response._embedded.imgRestaurante ) );
+  }
+
+
   getRestauranteListPaginate(thePage: number, thePageSize: number): Observable<GetResponse> {
     return this.http.get<GetResponse>(`${this.baseUrl}?page=${thePage}&size=${thePageSize}` );
   }
   getRestauranteListCatPaginate(thePage: number, thePageSize: number, theCategoriaId: number): Observable<GetResponse> {
-    const url =  `${this.baseUrl}/search/findByCategoriaId?id=${theCategoriaId}&page=${thePage}&size = ${thePageSize}`;
+    const url =  `${this.baseUrl}/search/findByCategoriaId?id=${theCategoriaId}&page=${thePage}&size=${thePageSize}`;
     return this.http.get<GetResponse>(url);
   }
+
+
+  searchRestaurantesPaginate(thePage: number, thePageSize: number, theKeyWord: string): Observable<GetResponsePag> {
+    const searchUrl = `${this.baseUrl}/search/findByNombreContaining?nombre=${theKeyWord}&page=${thePage}&size=${thePageSize}`;
+    // incompleto el searchURL
+    return this.http.get<GetResponsePag>(searchUrl);
+  }
+
+
 
 
 }
@@ -176,3 +194,8 @@ interface GetResponsePag {
 }
 
 
+interface GetResponseImagenes {
+  _embedded: {
+    imgRestaurante: ImgRestaurante[];
+  };
+}

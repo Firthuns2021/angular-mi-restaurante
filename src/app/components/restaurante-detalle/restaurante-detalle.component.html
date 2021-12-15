@@ -4,19 +4,60 @@
         <div class="card">
           <div class="card-img-top">
             <div class="card-header">
-              <img *ngIf="restaurante.imgLogo"
-                src="{{restaurante.imgLogo}}"  class="d-block w-100" alt="No imagen">
+<!--              <img *ngIf="restaurante.imgLogo"-->
+<!--                src="{{restaurante.imgLogo}}"  class="d-block w-100" alt="No imagen">-->
 <!--              ../../../assets/images/noimagen.png-->
+              <img *ngIf="!imagenes" src="assets/images/noimagen.png" alt="No image">
+              <ngb-carousel *ngIf="imagenes">
+                <ng-template ngbSlide *ngFor="let img of imagenes; let i = index" id="{{i}}">
+                  <div class="picsum-img-wrapper">
+                    <img [src]="img.imagen" class="d-block w-100" alt="Random Slide">
+                  </div>
+                </ng-template>
+              </ngb-carousel>
             </div>
           </div>
+
           <div class="card-body">
-            <div class="card-title">
-              {{restaurante.localizacion }}
+            <div class="col-md-6">
+                    <div class="card-title">
+                      {{restaurante.localizacion }}
+                    </div>
+                    <div class="card-text">
+                      Horario:
+                    </div>
             </div>
-            <div class="card-text">
-              Horario:
-            </div>
+              <p class="col-md-6">
+                  <h5>Comentarios</h5>
+                <p *ngIf="restaurante.comentarios">
+                  {{ restaurante.comentarios.length }} comentarios -
+                  <small class="badge bg-success p-2">
+                    {{ restaurante.puntuacionMedia | number: '1.0-2' }}
+                  </small>
+                  <i class="far fa-comment" data-bs-toggle="modal"
+                  data-bs-target="#commentModal"></i>
+                  </p>
+<!--                  MODAL-->
+                  <div class="modal fade text-start" id="commentModal"
+                  tabindex="-1" aria-labelledby="commentModalLabel" aria-hidden="true">
+                    <div class="modal-dialog">
+                      <div class="modal-content">
+                        <div class="modal-header">
+                          <h5 class="modal-title" id="commentModalLabel"></h5>
+                          <button type="button" class="btn-close" data-bs-dismiss="modal"
+                           aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+<!--                         FALTA ESTA PARTE    -->
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div >
+              </div>
+
           </div>
+
         </div>
       <h3 class="met-4">Platos</h3>
       <div *ngFor="let plato of platos"
