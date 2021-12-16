@@ -7,6 +7,7 @@ import {RestauranteCategoria} from '../common/restaurante-categoria';
 import {ComentarioRest} from '../common/comentario-rest';
 import {PlatoRestuarante} from '../common/plato-restuarante';
 import {ImgRestaurante} from '../common/img-restaurante';
+import {Horario} from '../common/horario';
 
 
 
@@ -141,8 +142,18 @@ export class RestauranteService {
     return this.http.get<GetResponsePag>(searchUrl);
   }
 
+  getHorariosRestaurante(restauranteId: number): Observable<Horario[]> {
+    const horariosUrl = `${this.baseUrl}/${restauranteId}/horarios`;
+    return this.http.get<GetResponseHorarios>(horariosUrl).pipe(
+      map((response: any) => response._embedded.horarios)
+    );
+  }
 
 
+  postComentario(restaurante: Restaurante, comentario: ComentarioRest): any{
+    return this.http.post(`http://localhost:8080/api/comentariosRest/add`,
+      {comentario, restaurante});
+  }
 
 }
 
@@ -197,5 +208,11 @@ interface GetResponsePag {
 interface GetResponseImagenes {
   _embedded: {
     imgRestaurante: ImgRestaurante[];
+  };
+}
+
+interface GetResponseHorarios {
+  _embedded: {
+    horarios: Horario[];
   };
 }

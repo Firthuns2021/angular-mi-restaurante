@@ -50,7 +50,7 @@ export class RestauranteListComponent implements OnInit {
       const theKeyWord = this.activatedRoute.snapshot.paramMap.get('keyword');
 
       if (theKeyWord) {
-    this.restauranteService.searchRestaurantesPaginate(this.thePageNumber -1 , this.thePageSize, theKeyWord).subscribe(
+    this.restauranteService.searchRestaurantesPaginate(this.thePageNumber - 1 , this.thePageSize, theKeyWord).subscribe(
       this.processResultPaginate()
 
     );

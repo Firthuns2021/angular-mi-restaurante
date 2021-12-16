@@ -2,6 +2,8 @@ import {RestauranteCategoria} from './restaurante-categoria';
 import {ComentarioRest} from './comentario-rest';
 import {PlatoRestuarante} from './plato-restuarante';
 
+import {Horario} from './horario';
+
 export class Restaurante {
 
   id: number;
@@ -18,6 +20,7 @@ export class Restaurante {
   comentarios: ComentarioRest[];
   puntuacionMedia: number;
   platosRestaurante: PlatoRestuarante[];
+  horarios: Horario[];
 
   constructor() {
     this.id = 0;
@@ -34,5 +37,6 @@ export class Restaurante {
     this.comentarios = [];
     this.puntuacionMedia = 0;
     this.platosRestaurante = [];
+    this.horarios = [];
   }
 }

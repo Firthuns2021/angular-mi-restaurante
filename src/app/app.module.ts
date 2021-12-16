@@ -10,6 +10,9 @@ import { NavigationComponent } from './components/navigation/navigation.componen
 import { SearchComponent } from './components/search/search.component';
 import { RestauranteDetalleComponent } from './components/restaurante-detalle/restaurante-detalle.component';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
+import {ReactiveFormsModule} from '@angular/forms';
+
+
 
 @NgModule({
   declarations: [
@@ -25,7 +28,9 @@ import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
     BrowserModule,
     AppRoutingModule,
     HttpClientModule,
+
     NgbModule,
+    ReactiveFormsModule,
 
   ],
   providers: [],

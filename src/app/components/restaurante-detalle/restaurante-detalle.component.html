@@ -1,75 +1,129 @@
 <div class="container-fluid">
   <div class="row">
     <div class="col-md-9">
-        <div class="card">
-          <div class="card-img-top">
-            <div class="card-header">
-<!--              <img *ngIf="restaurante.imgLogo"-->
-<!--                src="{{restaurante.imgLogo}}"  class="d-block w-100" alt="No imagen">-->
-<!--              ../../../assets/images/noimagen.png-->
-              <img *ngIf="!imagenes" src="assets/images/noimagen.png" alt="No image">
-              <ngb-carousel *ngIf="imagenes">
-                <ng-template ngbSlide *ngFor="let img of imagenes; let i = index" id="{{i}}">
-                  <div class="picsum-img-wrapper">
-                    <img [src]="img.imagen" class="d-block w-100" alt="Random Slide">
-                  </div>
-                </ng-template>
-              </ngb-carousel>
-            </div>
-          </div>
+      <div class="card">
 
-          <div class="card-body">
-            <div class="col-md-6">
-                    <div class="card-title">
-                      {{restaurante.localizacion }}
-                    </div>
-                    <div class="card-text">
-                      Horario:
-                    </div>
-            </div>
-              <p class="col-md-6">
-                  <h5>Comentarios</h5>
-                <p *ngIf="restaurante.comentarios">
-                  {{ restaurante.comentarios.length }} comentarios -
-                  <small class="badge bg-success p-2">
-                    {{ restaurante.puntuacionMedia | number: '1.0-2' }}
-                  </small>
+        <div class="card-img-top">
+          <div class="card-header">
+
+            <img *ngIf="!imagenes" src="assets/images/noimagen.png" alt="No image">
+            <ngb-carousel *ngIf="imagenes">
+              <ng-template ngbSlide *ngFor="let img of imagenes; let i = index"
+                           id="{{i}}">
+                <div class="picsum-img-wrapper">
+                  <img [src]="img.imagen" class=" d-block w-100" alt="Random first slide">
+                </div>
+              </ng-template>
+            </ngb-carousel>
+          </div>
+        </div>
+        <!-- ********  card-body -->
+        <div class="card-body">
+          <div class="card-title"><b>Dirección:</b>
+            {{restaurante.localizacion}}</div>
+          <div class="card-text">
+            <div class="row">
+              <div class="col-md-6">
+                <table class="table table-sm">
+                  <thead>
+                  <tr>
+                    <th>Día</th>
+                    <th>Apertura</th>
+                    <th>Cierre</th>
+                  </tr>
+                  </thead>
+                  <tbody>
+                  <tr *ngFor="let horario of horarios">
+<!--                    <td>{{ dias[horario.dia] }}</td>-->
+                    <td>{{ horario.apertura }}</td>
+                    <td>{{ horario.cierre }}</td>
+                  </tr>
+                  </tbody>
+                </table>
+              </div>
+
+<!--              2º columna -->
+              <div class="col-md-6">
+                <img class="img-thumbnail" src="{{ restaurante.imgLogo }}"
+                     alt="...">
+                <h5>Comentarios</h5>
+                <!-- MODAL Comentarios-->
+                <!-- Button trigger modal -->
+                <p
+                  *ngIf="restaurante.comentarios">{{restaurante.comentarios.length}}
+                  comentarios -
+                  <small class="badge bg-success p-2">{{restaurante.puntuacionMedia
+                    | number: '1.0-2'}}</small>
                   <i class="far fa-comment" data-bs-toggle="modal"
-                  data-bs-target="#commentModal"></i>
-                  </p>
-<!--                  MODAL-->
-                  <div class="modal fade text-start" id="commentModal"
-                  tabindex="-1" aria-labelledby="commentModalLabel" aria-hidden="true">
-                    <div class="modal-dialog">
-                      <div class="modal-content">
-                        <div class="modal-header">
-                          <h5 class="modal-title" id="commentModalLabel"></h5>
-                          <button type="button" class="btn-close" data-bs-dismiss="modal"
-                           aria-label="Close"></button>
+                     data-bs-target="#commentModal"></i>
+                </p>
+                <!-- Modal -->
+                <div class="modal fade text-start" id="commentModal" tabindex="-1"
+                     aria-labelledby="commentModalLabel"
+                     aria-hidden="true">
+                  <div class="modal-dialog">
+                    <div class="modal-content">
+                      <div class="modal-header">
+                        <h5 class="modal-title" id="commentModalLabel">Añadir
+                          Comentario</h5>
+                        <button type="button" class="btn-close"
+                                data-bs-dismiss="modal" aria-label="Close"></button>
+                      </div>
+                      <div class="modal-body">
+                        <div *ngFor="let comentario of restaurante.comentarios" >
+                          <h5>{{comentario.email}} <small class="badge bg-success
+p-2">{{comentario.puntuacion}}</small></h5>
+                          <p>{{comentario.comentario}}</p>
+                          <hr>
                         </div>
-                        <div class="modal-body">
-<!--                         FALTA ESTA PARTE    -->
+                      </div>
+                      <form [formGroup]="formComentario">
+                        <div class="row">
+                          <div class="col-9"> <div class="form-floating ms-3
+mt-0">
+                            <input class="form-control" id="comEmail"
+                                   formControlName="email" name="comEmail" type="text"
+                                   placeholder="Email">
+                            <label for="comEmail"><small>Email</small></label>
+                          </div></div>
+                          <div class="col-3"> <div class="form-floating me-3 mt-0">
+                            <input class="form-control"
+                                   formControlName="puntuacion" id="comPunt" name="comPunt"
+                                   type="number"> <label for="comPunt"><small>Puntuación</small></label>
+                          </div></div>
                         </div>
+                        <br>
+                        <div class=" ms-3 me-3 mt-0">
+<textarea class="form-control"
+          formControlName="comentario" name="comComent" placeholder="Escribe
+tu comentario..."></textarea><br>
+                        </div>
+                      </form>
+                      <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary"
+                                data-bs-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-primary"
+                                data-bs-dismiss="modal" (click)="addComentario(formComentario)">Save
+                          changes</button>
                       </div>
                     </div>
                   </div>
-                </div >
+                </div>
+                <!-- FIN DEL MODAL -->
               </div>
+<!--              ./ 2º columna-->
 
+            </div>
           </div>
-
         </div>
-      <h3 class="met-4">Platos</h3>
-      <div *ngFor="let plato of platos"
-        class="row border rounded pt-3 pb-3 mt-3 mb-3">
-          <h5>{{ plato.nombre }}</h5>
-        <p> {{ plato.descripcion }}</p>
-        <small class="text-info">{{ plato.precioBase | currency: 'EUR' }}</small>
+        <!-- ********  card-body -->
+
       </div>
-    </div>
-    <div class="col-md-3 offset-6 fixed" style="position: fixed">
-      <div class="ms-5 border rounded p-2">
-        CARRITO
+      <h3 class="mt-4">Platos</h3>
+      <div class="row border rounded pt-3 pb-3 mt-3 mb-3" *ngFor="let plato of platos">
+        <h5>{{ plato.nombre }}</h5>
+        <p>{{ plato.descripcion }}</p>
+        <small class="text-info">{{ plato.precioBase | currency: 'EUR' }}</small>
       </div>
     </div>
   </div>
