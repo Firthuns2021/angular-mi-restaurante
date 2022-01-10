@@ -7,6 +7,8 @@ import {PlatoRestuarante} from '../../common/plato-restuarante';
 import {ImgRestaurante} from '../../common/img-restaurante';
 import {Horario} from '../../common/horario';
 import {FormBuilder, FormGroup} from '@angular/forms';
+import {PlatoPedido} from '../../common/plato-pedido';
+import {CartService} from '../../services/cart.service';
 
 @Component({
   selector: 'app-restaurante-detalle',
@@ -30,6 +32,7 @@ export class RestauranteDetalleComponent implements OnInit {
   // private cartService: CartService,
 
   constructor(private restauranteService: RestauranteService,
+              private cartService: CartService,
               private formBuilder: FormBuilder,
               private activatedRoute: ActivatedRoute ,
              ) { }
@@ -100,5 +103,10 @@ export class RestauranteDetalleComponent implements OnInit {
 
   private handleComentarios(id: number): void {
 
+  }
+
+  addToCart(plato: PlatoRestuarante): void {
+    const elPlatoPedido = new PlatoPedido(plato);
+    this.cartService.addToCartRest(elPlatoPedido);
   }
 }

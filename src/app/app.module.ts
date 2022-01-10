@@ -11,6 +11,7 @@ import { SearchComponent } from './components/search/search.component';
 import { RestauranteDetalleComponent } from './components/restaurante-detalle/restaurante-detalle.component';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import {ReactiveFormsModule} from '@angular/forms';
+import { CartStatusComponent } from './components/cart-status/cart-status.component';
 
 
 
@@ -22,6 +23,7 @@ import {ReactiveFormsModule} from '@angular/forms';
     NavigationComponent,
     SearchComponent,
     RestauranteDetalleComponent,
+    CartStatusComponent,
 
   ],
   imports: [

@@ -121,6 +121,7 @@ tu comentario..."></textarea><br>
       </div>
       <h3 class="mt-4">Platos</h3>
       <div class="row border rounded pt-3 pb-3 mt-3 mb-3" *ngFor="let plato of platos">
+        <div class="row pointer" (click)="addToCart(plato)">
         <h5>{{ plato.nombre }}</h5>
         <p>{{ plato.descripcion }}</p>
         <small class="text-info">{{ plato.precioBase | currency: 'EUR' }}</small>
