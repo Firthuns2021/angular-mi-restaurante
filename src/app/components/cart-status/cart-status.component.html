@@ -14,9 +14,10 @@
       </tr>
       <tr *ngFor="let plato of cartItems">
         <td>
-          <p>{{plato.platoRestaurante.nombre}}</p>
-          <p class="text-info">{{plato.platoRestaurante.precioBase | currency:
-            'EUR'}}</p>
+          <p>{{plato.platoRestaurante.nombre}} <br>
+            <small>Extras: ( <span *ngFor="let extra of
+plato.extraPedido">{{extra.nombre}} </span>)</small></p>
+          <p class="text-info">{{plato.precioTotal | currency: 'EUR'}}</p>
         </td>
 
         <td>
@@ -41,12 +42,17 @@
               </button>
             </div>
           </div>
-          <p>Subtotal: {{ plato.platoRestaurante.precioBase * plato.cantidad | currency:
-            'EUR' }}</p>
+          <p>Subtotal: {{ plato.precioTotal * plato.cantidad | currency: 'EUR'
+            }}</p>
         </td>
 
 
       </tr>
     </table>
+
+    <div *ngIf="cartItems.length > 0" class="d-grid gap-2">
+      <button class="btn btn-warning" routerLink="/checkout">Pagar</button>
+    </div>
+
   </div>
 </div>

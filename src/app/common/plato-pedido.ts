@@ -1,11 +1,12 @@
-import {PlatoRestuarante} from './plato-restuarante';
+import {PlatoRestaurante} from "./plato-restaurante";
 
 export class PlatoPedido {
-  platoRestaurante: PlatoRestuarante;
+  platoRestaurante: PlatoRestaurante;
   cantidad: number;
   extraPedido: {nombre: string, coste: number}[];
   precioTotal: number;
-  constructor(platoRestaurante: PlatoRestuarante) {
+
+  constructor(platoRestaurante: PlatoRestaurante) {
     this.platoRestaurante = platoRestaurante;
     this.cantidad = 1;
     this.extraPedido = [];

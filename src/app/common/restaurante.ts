@@ -1,15 +1,13 @@
-import {RestauranteCategoria} from './restaurante-categoria';
-import {ComentarioRest} from './comentario-rest';
-import {PlatoRestuarante} from './plato-restuarante';
-
-import {Horario} from './horario';
+import {RestauranteCategoria} from "./restaurante-categoria";
+import {ComentarioRest} from "./comentario-rest";
+import {PlatoRestaurante} from "./plato-restaurante";
+import {Horario} from "./horario";
 
 export class Restaurante {
-
   id: number;
   nombre: string;
   imgLogo: string;
-  description: string;
+  descripcion: string;
   rangoMaxReparto: number;
   destacado: boolean;
   activo: boolean;
@@ -19,18 +17,18 @@ export class Restaurante {
   categoria: RestauranteCategoria;
   comentarios: ComentarioRest[];
   puntuacionMedia: number;
-  platosRestaurante: PlatoRestuarante[];
+  platosRestaurante : PlatoRestaurante[];
   horarios: Horario[];
 
   constructor() {
     this.id = 0;
     this.nombre = '';
     this.imgLogo = '';
-    this.description = '';
+    this.descripcion = '';
     this.rangoMaxReparto = 0;
-    this.destacado = false  ;
+    this.destacado = false;
     this.activo = false;
-    this.localizacion = '' ;
+    this.localizacion = '';
     this.dateCreated = new Date();
     this.lastUpdated = new Date();
     this.categoria = new RestauranteCategoria();

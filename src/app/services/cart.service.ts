@@ -14,6 +14,7 @@ export class CartService {
   totalPrice: Subject<number> = new BehaviorSubject<number>(0);
   totalQuantity: Subject<number> = new BehaviorSubject<number>(0);
   constructor() { }
+
   addToCart(theCartItem: PlatoPedido): void {
 // verificamos si está el plato en el carro ya
     let alreadyExistsInCart = false;
@@ -21,8 +22,9 @@ export class CartService {
     if (this.cartItems.length > 0) {
 // buscamos si existe el plato en el carro basandonos en el id
 // find busca el primer elemento en un array que valide la condición
-      existingCartItem = this.cartItems.find(tempCartItem =>
-        tempCartItem.platoRestaurante.id === theCartItem.platoRestaurante.id);
+      existingCartItem = this.cartItems.find(  tempCartItem => tempCartItem.platoRestaurante.id ===
+                                                               theCartItem.platoRestaurante.id &&
+                      (JSON.stringify(tempCartItem.extraPedido) ===       JSON.stringify(theCartItem.extraPedido)   )    );
     }
 // comprobamos si lo hemos encontrado
     alreadyExistsInCart = (existingCartItem !== undefined);
@@ -57,7 +59,7 @@ export class CartService {
     let totalQuantityValue = 0;
     for (const currentCartItem of this.cartItems) {
       totalPriceValue += currentCartItem.cantidad *
-        currentCartItem.platoRestaurante.precioBase;
+        currentCartItem.precioTotal;
       totalQuantityValue += currentCartItem.cantidad;
     }
 // publicamos los nuevos valores... todos los subscriptores recibirán la nueva  información

@@ -2,25 +2,26 @@
   <div class="row">
     <div class="col-md-9">
       <div class="card">
-
         <div class="card-img-top">
           <div class="card-header">
-
-            <img *ngIf="!imagenes" src="assets/images/noimagen.png" alt="No image">
+            <img *ngIf="!imagenes" src="assets/images/no-image-icon.jpg"
+                 alt="No imagen">
             <ngb-carousel *ngIf="imagenes">
-              <ng-template ngbSlide *ngFor="let img of imagenes; let i = index"
-                           id="{{i}}">
+              <ng-template
+                ngbSlide
+                *ngFor="let img of imagenes; let i = index" id="{{i}}">
                 <div class="picsum-img-wrapper">
-                  <img [src]="img.imagen" class=" d-block w-100" alt="Random first slide">
+                  <img [src]="img.imagen" class="d-block w-100"
+                       alt="Random Slide">
                 </div>
               </ng-template>
             </ngb-carousel>
           </div>
         </div>
-        <!-- ********  card-body -->
         <div class="card-body">
-          <div class="card-title"><b>Dirección:</b>
-            {{restaurante.localizacion}}</div>
+          <div class="card-title">
+            <b>Dirección:</b>{{restaurante.localizacion}}
+          </div>
           <div class="card-text">
             <div class="row">
               <div class="col-md-6">
@@ -34,98 +35,104 @@
                   </thead>
                   <tbody>
                   <tr *ngFor="let horario of horarios">
-<!--                    <td>{{ dias[horario.dia] }}</td>-->
-                    <td>{{ horario.apertura }}</td>
-                    <td>{{ horario.cierre }}</td>
+                    <td>{{dias[horario.dia]}}</td>
+                    <td>{{horario.apertura}}</td>
+                    <td>{{horario.cierre}}</td>
                   </tr>
                   </tbody>
                 </table>
-              </div>
 
-<!--              2º columna -->
+              </div>
               <div class="col-md-6">
-                <img class="img-thumbnail" src="{{ restaurante.imgLogo }}"
-                     alt="...">
                 <h5>Comentarios</h5>
-                <!-- MODAL Comentarios-->
-                <!-- Button trigger modal -->
-                <p
-                  *ngIf="restaurante.comentarios">{{restaurante.comentarios.length}}
-                  comentarios -
-                  <small class="badge bg-success p-2">{{restaurante.puntuacionMedia
-                    | number: '1.0-2'}}</small>
+                <p *ngIf="restaurante.comentarios">
+                  {{restaurante.comentarios.length}} comentarios -
+                  <small class="badge bg-success p-2">
+                    {{restaurante.puntuacionMedia | number: '1.0-2'}}
+                  </small>
                   <i class="far fa-comment" data-bs-toggle="modal"
                      data-bs-target="#commentModal"></i>
                 </p>
-                <!-- Modal -->
-                <div class="modal fade text-start" id="commentModal" tabindex="-1"
-                     aria-labelledby="commentModalLabel"
+                <!-- MODAL -->
+                <div class="modal fade text-start" id="commentModal"
+                     tabindex="-1" aria-labelledby="commentModalLabel"
                      aria-hidden="true">
                   <div class="modal-dialog">
                     <div class="modal-content">
                       <div class="modal-header">
-                        <h5 class="modal-title" id="commentModalLabel">Añadir
-                          Comentario</h5>
+                        <h5 class="modal-title" id="commentModalLabel">
+                          Añadir comentario
+                        </h5>
                         <button type="button" class="btn-close"
-                                data-bs-dismiss="modal" aria-label="Close"></button>
+                                data-bs-dismiss="modal"
+                                aria-label="Close"></button>
                       </div>
                       <div class="modal-body">
-                        <div *ngFor="let comentario of restaurante.comentarios" >
-                          <h5>{{comentario.email}} <small class="badge bg-success
-p-2">{{comentario.puntuacion}}</small></h5>
+                        <div *ngFor="let comentario of restaurante.comentarios">
+                          <h5>{{comentario.email}}
+                            <small class="badge bg-success p-2">
+                              {{comentario.puntuacion}}
+                            </small>
+                          </h5>
                           <p>{{comentario.comentario}}</p>
                           <hr>
                         </div>
                       </div>
                       <form [formGroup]="formComentario">
                         <div class="row">
-                          <div class="col-9"> <div class="form-floating ms-3
-mt-0">
-                            <input class="form-control" id="comEmail"
-                                   formControlName="email" name="comEmail" type="text"
-                                   placeholder="Email">
-                            <label for="comEmail"><small>Email</small></label>
-                          </div></div>
-                          <div class="col-3"> <div class="form-floating me-3 mt-0">
-                            <input class="form-control"
-                                   formControlName="puntuacion" id="comPunt" name="comPunt"
-                                   type="number"> <label for="comPunt"><small>Puntuación</small></label>
-                          </div></div>
+                          <div class="col-9">
+                            <div class="form-floating ms-3 mt-0">
+                              <input type="text" class="form-control"
+                                     formControlName="email" name="comEmail"
+                                     id="comEmail" placeholder="Email">
+                              <label for="comEmail"><small>Email</small></label>
+                            </div>
+                          </div>
+                          <div class="col-3">
+                            <div class="form-floating ms-3 mt-0">
+                              <input type="number" class="form-control"
+                                     formControlName="puntuacion" name="comPunt"
+                                     id="comPunt" placeholder="Puntuacion">
+                              <label for="comPunt"><small>Puntuación</small></label>
+                            </div>
+                          </div>
                         </div>
                         <br>
-                        <div class=" ms-3 me-3 mt-0">
-<textarea class="form-control"
-          formControlName="comentario" name="comComent" placeholder="Escribe
-tu comentario..."></textarea><br>
+                        <div class="ms-3 me-3 mt-0 mb-3">
+                          <textarea formControlName="comentario"
+                                    placeholder="Escribe tu comentario"
+                                    class="form-control" name="comComent"></textarea>
                         </div>
                       </form>
                       <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary"
-                                data-bs-dismiss="modal">Close</button>
-                        <button type="submit" class="btn btn-primary"
-                                data-bs-dismiss="modal" (click)="addComentario(formComentario)">Save
-                          changes</button>
+                        <button data-bs-dismiss="modal"
+                                class="btn btn-secondary">Close</button>
+                        <button type="submit" data-bs-dismiss="modal"
+                                (click)="addComentario(formComentario)"
+                                class="btn btn-primary">Save Changes</button>
                       </div>
                     </div>
                   </div>
                 </div>
                 <!-- FIN DEL MODAL -->
               </div>
-<!--              ./ 2º columna-->
-
             </div>
+
           </div>
         </div>
-        <!-- ********  card-body -->
-
       </div>
       <h3 class="mt-4">Platos</h3>
-      <div class="row border rounded pt-3 pb-3 mt-3 mb-3" *ngFor="let plato of platos">
-        <div class="row pointer" (click)="addToCart(plato)">
-        <h5>{{ plato.nombre }}</h5>
-        <p>{{ plato.descripcion }}</p>
-        <small class="text-info">{{ plato.precioBase | currency: 'EUR' }}</small>
+      <div *ngFor="let plato of platosRestaurante"
+           class="row border rounded pt-3 pb-3 mt-3 mb-3">
+        <div class="row pointer" (click)="addToCart(plato)"><h5>{{plato.nombre}}</h5>
+          <p>{{plato.descripcion}}</p>
+          <small class="text-info">
+            {{plato.precioBase | currency: 'EUR'}}
+          </small></div>
       </div>
+    </div>
+    <div class="col-md-3 offset-6 fixed">
+      <app-cart-status></app-cart-status>
     </div>
   </div>
 </div>
