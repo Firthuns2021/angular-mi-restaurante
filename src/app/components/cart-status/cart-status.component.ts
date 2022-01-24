@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import {CartService} from '../../services/cart.service';
-import {PlatoPedido} from '../../common/plato-pedido';
+import {PlatoPedido} from "../../common/plato-pedido";
+import {CartService} from "../../services/cart.service";
 
 @Component({
   selector: 'app-cart-status',
@@ -12,34 +12,37 @@ export class CartStatusComponent implements OnInit {
   cartItems: PlatoPedido[] = [];
   totalPrice = 0.00;
   totalQuantity = 0;
+
   constructor(private cartService: CartService) { }
+
   ngOnInit(): void {
     this.updateCartStatus();
   }
-  updateCartStatus(): void {
-// nos subscribimos al carrito para que nos diga cuando se actualiza
+
+  private updateCartStatus(): void {
+    // nos suscribimos al carrito
     this.cartService.myCart.subscribe(
       (data: any) => this.cartItems = data
     );
-// nos subscribimos al precio total del servicio del carrito
+    // nos suscribimos al precioTotal
     this.cartService.totalPrice.subscribe(
       (data: any) => this.totalPrice = data
     );
-// nos subscribimos a la cantidad total del servicio del carrito
+    // nos suscribimos a la cantidad total
     this.cartService.totalQuantity.subscribe(
       (data: any) => this.totalQuantity = data
     );
   }
 
-  incrementQuantity(plato: PlatoPedido): void {
-    // añadimos al carrito el plato que queremos incrementar
+  incrementQuantity(plato: PlatoPedido) {
     this.cartService.addToCart(plato);
   }
 
-  decrementQuantity(plato: PlatoPedido): void {
+  decrementQuantity(plato: PlatoPedido) {
     this.cartService.decrementQuantity(plato);
   }
-  remove(plato: PlatoPedido): void {
+
+  remove(plato: PlatoPedido) {
     this.cartService.remove(plato);
   }
 }

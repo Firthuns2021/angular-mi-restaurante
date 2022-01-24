@@ -4,6 +4,11 @@ img{
 .border{
   box-shadow: 2px 2px lightgrey;
 }
+
+small{
+  padding-right: .5em;
+}
+
 .pointer:hover{
   cursor: pointer;
 }

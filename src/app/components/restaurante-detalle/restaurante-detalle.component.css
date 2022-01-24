@@ -1,12 +1,11 @@
 .card-header img{
-    width: 100%;
+  width: 100%;
 }
+
 .fixed{
   position: fixed;
 }
-.pointer{
-  cursor: pointer;
-}
+
 .fa-comment{
   font-size: 1.6rem;
   margin-left: 1rem;

@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-import {RestauranteService} from '../../services/restaurante.service';
-import {Restaurante} from '../../common/restaurante';
-import {ActivatedRoute} from '@angular/router';
+import {Restaurante} from "../../common/restaurante";
+import {RestauranteService} from "../../services/restaurante.service";
+import {ActivatedRoute} from "@angular/router";
 
 @Component({
   selector: 'app-restaurante-list',
@@ -10,129 +10,180 @@ import {ActivatedRoute} from '@angular/router';
 })
 export class RestauranteListComponent implements OnInit {
 
-  /*** creamos el array de restaurantes donde guardaremos los datos de la API REST */
+  // creamos el array de restaurantes donde guardaremos
+  // los restaurantes que traigamos de la API REST
   restaurantes: Restaurante[] = [];
+  // creamos la variable que guardará la categoria actual si tiene
   actualCategoriaID = 0;
-
-  // creamos las variables para paginación
-  thePageNumber = 1;
-  thePageSize = 10;
-  theTotalElements = 0;
-
-  /*** Creamos la variable que gaurdará la categoria actual si tiene  */
-  constructor(private restauranteService: RestauranteService,
-              private activatedRoute: ActivatedRoute ) { }
-  /*** variable de búsqueda*/
+  // creamos una variable de modo búsqueda
   searchMode = false;
 
-  ngOnInit(): void {
-    // nos subscribimos al activatedRoute para ver si hay parametros.
-    this.activatedRoute.paramMap.subscribe( () => {
-      this.listRestaurantes();
-    });
+  // Variables de paginación
+  thePageNumber = 1;
+  thePageSize = 5;
+  theTotalElements = 0;
 
+
+  // inyectamos el servicio de restaurante para poder utilizarlo
+  constructor(private restauranteService: RestauranteService,
+              private activatedRoute: ActivatedRoute) { }
+
+  // En el ngOnInit es donde vamos a poner las funciones que
+  // queremos que se ejecuten cuando se inicie este componente
+  // En nuestro caso vamos a leer los restaurantes subscribiendonos
+  // al servicio restaurante
+  ngOnInit(): void {
+    // nos subscribimos al activatedRoute para ver si hay parámetros
+    this.activatedRoute.paramMap.subscribe(() => {
+      this.listRestaurantes();
+    })
   }
 
+  // Definimos la función que listará los restaurantes
   listRestaurantes(): void {
-    // vemos si la Url tiene parámetro keyword
+    // vemos si laurl tiene parámetro keyword
     this.searchMode = this.activatedRoute.snapshot.paramMap.has('keyword');
-    // *** si tiene keyword, gestionamos la búsqueda
-    if ( this.searchMode){
-      this.handleSearchRestaurante();
-    }else{
+    // si tenemos keyword, entonces gestionamos la búsqueda
+    if (this.searchMode) {
+      this.handleSearchRestaurantes();
+    }
+    else {
       this.handleListRestaurantes();
     }
 
-
   }
-/*** Funcion que nos gestionará la busqueda */
-  private handleSearchRestaurante(): any {
-      const theKeyWord = this.activatedRoute.snapshot.paramMap.get('keyword');
 
-      if (theKeyWord) {
-    this.restauranteService.searchRestaurantesPaginate(this.thePageNumber - 1 , this.thePageSize, theKeyWord).subscribe(
-      this.processResultPaginate()
-
-    );
-  }
-}
-
-  handleListRestaurantes(): void {
-// antigua listRestaurantes()
-// vemos si el parámetro id existe
+  private handleListRestaurantes() {
+    // vemos si el parámetro id existe
     const tieneCategoriaId = this.activatedRoute.snapshot.paramMap.has('id');
+
     if (tieneCategoriaId) {
-// si tiene id, cogemos ese id y lo convertimos a número
-      this.actualCategoriaID = this.activatedRoute.snapshot.paramMap.get('id') as
-        unknown as number;
-// this.thePageNumber - 1 porque en Angular es 1 based y en Spring 0 based
-      this.restauranteService.getRestauranteListCatPaginate(this.thePageNumber - 1,
-        this.thePageSize, this.actualCategoriaID)
-        .subscribe(this.processResult());
+      // tiene id, lo cogemos y lo guardamos como number
+      this.actualCategoriaID = this.activatedRoute.snapshot
+        .paramMap.get('id') as unknown as number;
+      // llamamos a nuestro servicio para que nos devuelva los restaurantes
+      // de esta categoria
+      // Listado sin paginación
+      /*
+      this.restauranteService.getRestauranteListCat(this.actualCategoriaID)
+        .subscribe(
+          this.processResult()
+        );
+       */
+      // PageNumber le restamos uno porque
+      // Angular tiene paginación 1 based
+      // Spring tiene paginación 0 based
+      this.restauranteService.getRestauranteListCatPaginate(
+        this.thePageNumber -1,
+        this.thePageSize,
+        this.actualCategoriaID
+      ).subscribe(this.processResultPaginate());
     }
     else {
-// Con paginación
+      // llamamos a la función del servicio que me trae los restaurantes
+      // y nos suscribimos a ella para mantener la información actualizada
+      // Función sin paginación
+      /*
+      this.restauranteService.getRestauranteList().subscribe(
+        // una vez suscritos, recogemos la respuesta en una variable
+        // llamada data
+        this.processResult()
+      )
+       */
       this.restauranteService.getRestauranteListPaginate(
-        this.thePageNumber - 1,
-        this.thePageSize).subscribe(this.processResult());
+        this.thePageNumber -1,
+        this.thePageSize
+      ).subscribe(this.processResultPaginate());
     }
   }
 
-
-
-
-
-  processResult(): any {
+  private handleSearchRestaurantes() {
+    const theKeyword = this.activatedRoute.snapshot.paramMap.get('keyword');
+    // una vez guardado el parámetro, buscamos los restaurantes
+    // utilizando una función del servicio
+    if(theKeyword) {
+      this.restauranteService.searchRestaurantesPaginate(
+        this.thePageNumber -1,
+        this.thePageSize,
+        theKeyword)
+        .subscribe(
+          this.processResultPaginate()
+        );
+    }
+  }
+  private processResult(): any{
     return (data: any) => {
-      this.restaurantes = data._embedded.restaurantes;
-// de nuevo Spring 0 based y Angular 1 based
-      this.thePageNumber = data.page.number + 1;
-      this.thePageSize = data.page.size;
-      this.theTotalElements = data.page.totalElements;
-    };
+      this.restaurantes = data;
+      this.restaurantes.forEach(
+        restaurante => {
+          this.restauranteService.getCategoria(restaurante.id)
+            .subscribe(
+              cat => {
+                restaurante.categoria = cat;
+              }
+            );
+          this.restauranteService.getComentariosRestaurante(
+            restaurante.id).subscribe(
+              comment => {
+                restaurante.comentarios = comment;
+                this.CalcularMediaComentarios(restaurante);
+              }
+          )
+        }
+      )
+    }
+}
+
+  private CalcularMediaComentarios(restaurante: Restaurante) {
+    let aux = 0;
+    console.log(restaurante);
+
+    if (restaurante.comentarios.length > 0) {
+      restaurante.comentarios.forEach(
+        comentario => {
+          aux += comentario.puntuacion;
+        }
+      );
+      restaurante.puntuacionMedia =
+        aux / restaurante.comentarios.length;
+    } else { restaurante.puntuacionMedia = 0}
   }
 
-  updatePageSize(event: any): void {
-// seleccionamos el valor del select y lo asignamos a nuestra variable
+  private processResultPaginate() {
+    return (data: any) => {
+      this.restaurantes = data._embedded.restaurantes;
+      this.restaurantes.forEach(
+        restaurante => {
+          this.restauranteService.getCategoria(restaurante.id)
+            .subscribe(
+              cat => {
+                restaurante.categoria = cat;
+              }
+            );
+          this.restauranteService.getComentariosRestaurante(
+            restaurante.id).subscribe(
+            comment => {
+              restaurante.comentarios = comment;
+              this.CalcularMediaComentarios(restaurante);
+            }
+          )
+        }
+      )
+      this.thePageNumber = data.page.number +1;
+      this.thePageSize = data.page.size;
+      this.theTotalElements = data.page.totalElements;
+    }
+  }
+
+  updatePageSize(event: any) {
+    // seleccionamos el valor del select
+    // y lo asignamos a nuestra variable
     if (event.target.value) {
       this.thePageSize = event.target.value;
     }
-// reiniciamos la página a la 1
+    // reiniciamos a la página número 1
     this.thePageNumber = 1;
-// volvemos a cargar los restaurantes
+    // volvemos a cargar los restaurantes
     this.listRestaurantes();
   }
-
-   calcularMediaComentarios(restaurante: Restaurante): void  {
-     let aux = 0;
-     restaurante.comentarios.forEach(
-       comentario => {
-         aux += comentario.puntuacion;
-       }
-     );
-     if (restaurante.comentarios.length > 0) {
-       restaurante.puntuacionMedia = aux / restaurante.comentarios.length;
-     } else { restaurante.puntuacionMedia = 0; }
-  }
-
-  // tslint:disable-next-line:typedef
-  private processResultPaginate() {
-      return(data: any) => {
-        this.restaurantes = data._embedded.restaurantes;
-        this.restaurantes.forEach(
-          restaurante => {
-            this.restauranteService.getCategoria(restaurante.id).subscribe( cat => {
-              restaurante.categoria = cat;
-            });
-            this.restauranteService.getComentariosRestaurante( restaurante.id).subscribe( comment => {
-                restaurante.comentarios = comment;
-                this.calcularMediaComentarios(restaurante);
-            });
-          }
-        );
-      };
-  }
-
-  // tslint:disable-next-line:typedef
-
 }

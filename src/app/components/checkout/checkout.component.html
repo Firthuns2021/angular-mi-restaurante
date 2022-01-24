@@ -1,1 +1,221 @@
-<p>checkout works!</p>
+<div class="col-md-8 offset-2">
+  <form [formGroup]="checkoutFormGroup" class="needs-validation" (submit)="onSubmit()">
+    <div class="row g-3">
+      <div formGroupName="cliente">
+        <h4 class="mb-3">Información del cliente</h4>
+        <div class="row">
+          <div class="col-md-6">
+            <label for="nombre" class="form-label">Nombre</label>
+            <input type="text" formControlName="nombre" class="form-control" id="nombre" required>
+          </div>
+          <div class="col-md-6">
+            <label for="apellido" class="form-label">Apellidos</label>
+            <input type="text" formControlName="nombre" class="form-control" id="apellido" required>
+          </div>
+        </div>
+
+        <div class="col-md-12">
+          <label for="dni" class="form-label">DNI</label>
+          <input type="text" formControlName="dni" class="form-control" id="dni" required>
+        </div>
+        <div class="col-md-12">
+          <label for="email" class="form-label">Email</label>
+          <input type="text" formControlName="email" class="form-control" id="email" required>
+        </div>
+        <div class="col-md-12">
+          <label for="telefono" class="form-label">Teléfono</label>
+          <input type="text" formControlName="telefono" class="form-control" id="telefono" required>
+        </div>
+
+      </div>
+      <!--   **********************************       FIN DEL CLIENTE **********************************-->
+      <!--   **********************************       dIRECCION DE ENVIO **********************************-->
+
+      <div formGroupName="shippingAddress">
+        <h4 class="mt-5">Dirección de envío</h4>
+        <div class="row">
+          <div class="col-md-2">
+            <label for="tipoVia" class="form-label">Tipo de vía</label>
+            <select formControlName="tipoVia" id="tipoVia" class="form-select" required>
+              <option value="calle">Calle</option>
+              <option value="Avenida">Avenida</option>
+              <option value="Plaza">Plaza</option>
+              <option value="Carretera">Carretera</option>
+            </select>
+          </div>
+
+          <div class="col-md-8">
+            <label for="calle" class="form-label">Dirección</label>
+            <input type="text" formControlName="calle" required class="form-control" id="calle">
+          </div>
+          <div class="col-md-2">
+            <label for="numero" class="form-label">Número</label>
+            <input type="text" formControlName="numero" required class="form-control" id="numero">
+          </div>
+          <div class="col-md-12">
+            <label for="ciudad" class="form-label">Ciudad</label>
+            <input type="text" formControlName="ciudad" required class="form-control" id="ciudad">
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-5">
+            <label for="pais" class="form-label">País</label>
+            <select formControlName="pais" id="pais" class="form-select" required>
+              <option value="España">España</option>
+              <option value="UUAA">UUAA</option>
+
+            </select>
+          </div>
+          <div class="col-md-4">
+            <label for="provincia" class="form-label">Provincia</label>
+            <select formControlName="provincia" id="provincia" class="form-select" required>
+              <option value="Valencias">Valencias</option>
+              <option value="UUAA">UUAA</option>
+
+            </select>
+          </div>
+          <div class="col-md-3">
+            <label for="cp" class="form-label">C.P.</label>
+            <input type="text" formControlName="cp" required class="form-control" id="cp">
+          </div>
+        </div>
+      </div>
+      <!--      ******    final de shipping address -->
+      <hr class="my-4">
+      <div class="form-check">
+        <input type="checkbox" class="form-check-input" id="same-address" (change)="copyShippingToBilling($event)">
+        <label for="same-address" class="form-check-label">
+          La dirección de envió es la m isma que la de facturación
+        </label>
+      </div>
+      <div class="form-check">
+        <input type="checkbox" class="form-check-input" id="save-info" (change)="copyShippingToBilling($event)">
+        <label for="save-info" class="form-check-label">
+          Guardar dirección
+        </label>
+      </div>
+
+    </div>
+    <!--              Fin de los check-->
+    <!--   ***********         Direccion de facturacion-->
+    <div formGroupName="billingAddress">
+      <h4 class="mt-5">Dirección de envío</h4>
+      <div class="row">
+        <div class="col-md-2">
+          <label for="tipoViab" class="form-label">Tipo de vía</label>
+          <select formControlName="tipoVia" id="tipoViaB" class="form-select" required>
+            <option value="calle">Calle</option>
+            <option value="Avenida">Avenida</option>
+            <option value="Plaza">Plaza</option>
+            <option value="Carretera">Carretera</option>
+          </select>
+        </div>
+
+        <div class="col-md-8">
+          <label for="calleB" class="form-label">Dirección</label>
+          <input type="text" formControlName="calle" required class="form-control" id="calleB">
+        </div>
+        <div class="col-md-2">
+          <label for="numeroB" class="form-label">Número</label>
+          <input type="text" formControlName="numero" required class="form-control" id="numeroB">
+        </div>
+        <div class="col-md-12">
+          <label for="ciudadB" class="form-label">Ciudad</label>
+          <input type="text" formControlName="ciudadB" required class="form-control" id="ciudadB">
+        </div>
+        <div class="row">
+          <div class="col-md-5">
+            <label for="paisB" class="form-label">País</label>
+            <select formControlName="pais" id="paisB" class="form-select" required>
+              <option value="España">España</option>
+              <option value="UUAA">UUAA</option>
+
+            </select>
+          </div>
+          <div class="col-md-4">
+            <label for="provinciaB" class="form-label">Provincia</label>
+            <select formControlName="provincia" id="provinciaB" class="form-select" required>
+              <option value="Valencias">Valencias</option>
+              <option value="UUAA">UUAA</option>
+
+            </select>
+          </div>
+          <div class="col-md-3">
+            <label for="cpB" class="form-label">C.P.</label>
+            <input type="text" formControlName="cp" required class="form-control" id="cpB">
+          </div>
+        </div>
+      </div>
+
+      <!--      ******    final de direccion de facturacion -->
+
+      <!-- ***  TARJETA DE CREDITO     -->
+      <hr class="my-4">
+      <h4 class="mb-3">Pago</h4>
+      <div class="row gy-3" formGroupName="creditCard">
+        <div class="col-md-3">
+          <label for="cardType" class="form-label">Tipo tarjeta</label>
+          <select formControlName="cardType" id="cardType" class="form-select" required>
+            <option selected value="VISA">VISA</option>
+            <option value="MaesterCard">MaesterCard</option>
+
+          </select>
+
+        </div>
+
+        <div class="col-md-9">
+          <label for="nameOnCard" class="form-label">Nombre en la tarjeta</label>
+          <input type="text" formControlName="nameOnCard" required class="form-control" id="nameOnCard">
+        </div>
+        <div class="col-md-12">
+          <label for="carNumber" class="form-label">Número de la tarjeta</label>
+          <input type="text" formControlName="carNumber" required class="form-control" id="carNumber">
+        </div>
+
+        <div class="col-md-3">
+          <label for="expirationMonth" class="form-label">Mes</label>
+          <select formControlName="expirationMonth" id="expirationMonth" class="form-select" required>
+            <option *ngFor="let m of creditCardMonths" selected value="{{m}}">{{m}}</option>
+
+
+          </select>
+
+        </div>
+        <div class="col-md-2">
+          <label for="expirationYear" class="form-label">Año</label>
+          <select formControlName="expirationYear" id="expirationYear" class="form-select" required>
+            <option *ngFor="let y of creditCardYears" selected value="{{y}}">{{y}}</option>
+          </select>
+          <div class="invalid-feedback">
+            el mes de expiración es obligatorio
+          </div>
+        </div>
+
+        <div class="col-md-2">
+          <label for="securityCode" class="form-label">CVV</label>
+          <input type="text" formControlName="securityCode" required class="form-control" id="securityCode">
+        </div>
+      </div>
+
+      <!-- **** ./  TARJETA DE CREDITO            -->
+      <hr class="my-4">
+
+      <!-- ****     detalles del pedido        -->
+              <div class="form-area">
+                <h3>Revisa tu pedido</h3>
+                <p><span class="font-weight-bold">Cantidad total:</span>
+                  {{ totalQuantity }}
+                </p>
+                <p><span class="font-weight-bold">Envío:</span>GRATUÍTO</p>
+                <p><span class="font-weight-bold">Precio total:</span>
+                {{ totalPrice | currency: 'EUR' }}
+                </p>
+                <hr class="my-4">
+                <button class="w-100 btn btn-warning btn-lg mb-5" type="submit">Pagar</button>
+              </div>
+
+      <!-- **** ./detalles del pedido-->
+
+    </div>
+  </form>
+</div>

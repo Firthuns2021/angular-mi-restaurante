@@ -24,112 +24,156 @@
           </div>
           <div class="card-text">
             <div class="row">
-              <div class="col-md-6">
-                <table class="table table-sm">
-                  <thead>
-                  <tr>
-                    <th>Día</th>
-                    <th>Apertura</th>
-                    <th>Cierre</th>
-                  </tr>
-                  </thead>
-                  <tbody>
-                  <tr *ngFor="let horario of horarios">
-                    <td>{{dias[horario.dia]}}</td>
-                    <td>{{horario.apertura}}</td>
-                    <td>{{horario.cierre}}</td>
-                  </tr>
-                  </tbody>
-                </table>
+            <div class="col-md-6">
+              <table class="table table-sm">
+                <thead>
+                <tr>
+                  <th>Día</th>
+                  <th>Apertura</th>
+                  <th>Cierre</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr *ngFor="let horario of horarios">
+                  <td>{{dias[horario.dia]}}</td>
+                  <td>{{horario.apertura}}</td>
+                  <td>{{horario.cierre}}</td>
+                </tr>
+                </tbody>
+              </table>
 
-              </div>
-              <div class="col-md-6">
-                <h5>Comentarios</h5>
-                <p *ngIf="restaurante.comentarios">
-                  {{restaurante.comentarios.length}} comentarios -
-                  <small class="badge bg-success p-2">
-                    {{restaurante.puntuacionMedia | number: '1.0-2'}}
-                  </small>
-                  <i class="far fa-comment" data-bs-toggle="modal"
-                     data-bs-target="#commentModal"></i>
-                </p>
-                <!-- MODAL -->
-                <div class="modal fade text-start" id="commentModal"
-                     tabindex="-1" aria-labelledby="commentModalLabel"
-                     aria-hidden="true">
-                  <div class="modal-dialog">
-                    <div class="modal-content">
-                      <div class="modal-header">
-                        <h5 class="modal-title" id="commentModalLabel">
-                          Añadir comentario
+            </div>
+            <div class="col-md-6">
+              <h5>Comentarios</h5>
+              <p *ngIf="restaurante.comentarios">
+                {{restaurante.comentarios.length}} comentarios -
+                <small class="badge bg-success p-2">
+                  {{restaurante.puntuacionMedia | number: '1.0-2'}}
+                </small>
+                <i class="far fa-comment" data-bs-toggle="modal"
+                   data-bs-target="#commentModal"></i>
+              </p>
+              <!-- ****************** MODAL ******************************************-->
+              <div class="modal fade text-start" id="commentModal"
+                   tabindex="-1" aria-labelledby="commentModalLabel"
+                   aria-hidden="true">
+                <div class="modal-dialog">
+                  <div class="modal-content">
+                    <div class="modal-header">
+                      <h5 class="modal-title" id="commentModalLabel">
+                        Añadir comentario
+                      </h5>
+                      <button type="button" class="btn-close"
+                              data-bs-dismiss="modal"
+                              aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                      <div *ngFor="let comentario of restaurante.comentarios">
+                        <h5>{{comentario.email}}
+                          <small class="badge bg-success p-2">
+                            {{comentario.puntuacion}}
+                          </small>
                         </h5>
-                        <button type="button" class="btn-close"
-                                data-bs-dismiss="modal"
-                                aria-label="Close"></button>
+                        <p>{{comentario.comentario}}</p>
+                        <hr>
                       </div>
-                      <div class="modal-body">
-                        <div *ngFor="let comentario of restaurante.comentarios">
-                          <h5>{{comentario.email}}
-                            <small class="badge bg-success p-2">
-                              {{comentario.puntuacion}}
-                            </small>
-                          </h5>
-                          <p>{{comentario.comentario}}</p>
-                          <hr>
-                        </div>
-                      </div>
-                      <form [formGroup]="formComentario">
-                        <div class="row">
-                          <div class="col-9">
-                            <div class="form-floating ms-3 mt-0">
-                              <input type="text" class="form-control"
-                                     formControlName="email" name="comEmail"
-                                     id="comEmail" placeholder="Email">
-                              <label for="comEmail"><small>Email</small></label>
-                            </div>
-                          </div>
-                          <div class="col-3">
-                            <div class="form-floating ms-3 mt-0">
-                              <input type="number" class="form-control"
-                                     formControlName="puntuacion" name="comPunt"
-                                     id="comPunt" placeholder="Puntuacion">
-                              <label for="comPunt"><small>Puntuación</small></label>
-                            </div>
+                    </div>
+                    <form [formGroup]="formComentario">
+                      <div class="row">
+                        <div class="col-9">
+                          <div class="form-floating ms-3 mt-0">
+                            <input type="text" class="form-control"
+                                   formControlName="email" name="comEmail"
+                                   id="comEmail" placeholder="Email">
+                            <label for="comEmail"><small>Email</small></label>
                           </div>
                         </div>
-                        <br>
-                        <div class="ms-3 me-3 mt-0 mb-3">
+                        <div class="col-3">
+                          <div class="form-floating ms-3 mt-0">
+                            <input type="number" class="form-control"
+                                   formControlName="puntuacion" name="comPunt"
+                                   id="comPunt" placeholder="Puntuacion">
+                            <label for="comPunt"><small>Puntuación</small></label>
+                          </div>
+                        </div>
+                      </div>
+                      <br>
+                      <div class="ms-3 me-3 mt-0 mb-3">
                           <textarea formControlName="comentario"
                                     placeholder="Escribe tu comentario"
                                     class="form-control" name="comComent"></textarea>
-                        </div>
-                      </form>
-                      <div class="modal-footer">
-                        <button data-bs-dismiss="modal"
-                                class="btn btn-secondary">Close</button>
-                        <button type="submit" data-bs-dismiss="modal"
-                                (click)="addComentario(formComentario)"
-                                class="btn btn-primary">Save Changes</button>
                       </div>
+                    </form>
+                    <div class="modal-footer">
+                      <button data-bs-dismiss="modal"
+                              class="btn btn-secondary">Close</button>
+                      <button type="submit" data-bs-dismiss="modal"
+                              (click)="addComentario(formComentario)"
+                              class="btn btn-primary">Save Changes</button>
                     </div>
                   </div>
                 </div>
-                <!-- FIN DEL MODAL -->
               </div>
+              <!-- ****************** ./ MODAL ******************************************-->
             </div>
+          </div>
 
           </div>
         </div>
       </div>
+      <!-- ****************** Plato ******************************************-->
       <h3 class="mt-4">Platos</h3>
       <div *ngFor="let plato of platosRestaurante"
-           class="row border rounded pt-3 pb-3 mt-3 mb-3">
+        class="row border rounded pt-3 pb-3 mt-3 mb-3">
         <div class="row pointer" (click)="addToCart(plato)"><h5>{{plato.nombre}}</h5>
           <p>{{plato.descripcion}}</p>
           <small class="text-info">
             {{plato.precioBase | currency: 'EUR'}}
-          </small></div>
+          </small>
+        </div>
+        <!-- **************************       modal de extras **************************-->
+        <div class="text-end">
+          <!-- Button trigger modal -->
+          <button type="button" class="btn btn-warning btn-sm" data-bs-toggle="modal"  data-bs-target="#extraModal">
+            AÑADIR EXTRA
+          </button>
+
+          <!-- Modal -->
+          <div class="modal fade text-start" id="extraModal" tabindex="-1"  aria-labelledby="extraModalLabel"  aria-hidden="true">
+            <div class="modal-dialog">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h5 class="modal-title" id="extraModalLabel">Añadir
+                    Extra</h5>
+                  <button type="button" class="btn-close"
+                          data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                  <form #miForm>
+                    <div *ngFor="let extra of plato.extras" >
+                      <input #miExtra name="extra-{{extra.nombre}}"
+                             type="checkbox" (change)="OnCheckboxSelect(extra, $event)" >
+                      {{ extra.nombre }}: {{ extra.coste | currency: 'EUR' }}
+                    </div>
+                  </form>
+                </div>
+                <div class="modal-footer">
+                  <button type="button" class="btn btn-secondary"
+                          data-bs-dismiss="modal">Close</button>
+                  <button type="submit" class="btn btn-primary"
+                          data-bs-dismiss="modal" (click)="addToCartForm(plato, miForm)">
+                    Save changes
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- **************************   ./    modal de extras **************************-->
+
+
       </div>
+      <!-- ****************** ./ Plato ******************************************-->
     </div>
     <div class="col-md-3 offset-6 fixed">
       <app-cart-status></app-cart-status>

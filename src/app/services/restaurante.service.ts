@@ -8,6 +8,7 @@ import {ComentarioRest} from '../common/comentario-rest';
 import {PlatoRestuarante} from '../common/plato-restuarante';
 import {ImgRestaurante} from '../common/img-restaurante';
 import {Horario} from '../common/horario';
+import {PlatoRestaurante} from '../common/plato-restaurante';
 
 
 
@@ -17,181 +18,145 @@ import {Horario} from '../common/horario';
 export class RestauranteService {
 
   // Primero definimos la ruta de nuestra API REST
-  private baseUrl = 'http://localhost:8080/api/restaurantes';
+  private baseURL = 'http://localhost:8080/api/restaurantes';
 
-/*** Inyectamos el protcolo cliente http para poder realizar peticiones http a la API */
+  // Inyectamos el protocolo cliente http para poder
+  // realizar peticiones http a  la API
   constructor(private http: HttpClient) { }
 
-/*** Creamos la función que nos devolverá el array de restaurauntes, como la AP nos lo devuelve dentro de un objeto llamdo
-   *** _embedded, tendremos que mpaear el resultado con un filtro , y para ello crearemos una interfaz que gestione esto***/
-
-// getRestauranteList(): Observable<Restaurante[]>{
-//
-//   return this.http.get<GetResponse>(this.baseURL).pipe(
-//     map((response: any ) => response._embedded.restaurantes)
-//   );
-//
-//
-// }
-//
-//
-// getRestauranteListCat(laCategoria: number): Observable<Restaurante[]>{
-//
-//       const urlCat = this.baseURL + '/search/findByCategoriaId?id=' + laCategoria;
-//
-//       return  this.http.get<GetResponse>( urlCat ).pipe(
-//         map((response: any ) => response._embedded.restaurantes)
-//       );
-//     }
-//
-//
-//   getCategoriasRestaurante(): Observable<RestauranteCategoria[]> {
-//     const urlCat = 'http://localhost:8080/api/categorias';
-//     return this.http.get<GetResponseCategoria>(urlCat).pipe(
-//       map( (response: any) => response._embedded.categorias )
-//     );
-//   }
-//
-//   searchRestaurantes(theKeyWord: string): Observable<Restaurante[]> {
-//   const searchUrl = `${this.baseURL}/search/findByNombreContaining?nombre=${theKeyWord}`;
-//
-//   return this.http.get<GetResponse>(searchUrl).pipe(
-//       map((response: any) => response._embedded.restaurantes)
-//     );
-//   }
-  // **** Refactorizamos la funciones de arriba
+  // Creamos la función que nos devolverá el array de restaurantes
+  // Como la API nos lo devuelve dentro de un objeto llamado
+  // _embedded, tendremos que mapear el resultado con un filtro
+  // Para ello crearemos una interfaz que gestione esto
   getRestauranteList(): Observable<Restaurante[]> {
-    return this.getRestaurantes(this.baseUrl);
+    return this.getRestaurantes(this.baseURL);
   }
   getRestauranteListCat(laCategoria: number): Observable<Restaurante[]> {
-    const urlCat = this.baseUrl + '/search/findByCategoriaId?id=' + laCategoria;
+    const urlCat = this.baseURL +
+      '/search/findByCategoriaId?id=' + laCategoria;
     return this.getRestaurantes(urlCat);
   }
-
-  getCategoria(idRestaurante: number): Observable<RestauranteCategoria>{
-
-      const catUrl = 'http://localhost:8080/api/restaurantes/';
-      return this.http.get<RestauranteCategoria>(`${catUrl +
-      idRestaurante }/categoria`);
+  // Creamos la versión con paginación de las funciones
+  // para ver los restaurantes y los restaurantes de una cat
+  getRestauranteListPaginate(
+    thePage: number,
+    thePageSize: number): Observable<GetResponsePag> {
+    return this.http.get<GetResponsePag>(
+      `${this.baseURL}?page=${thePage}&size=${thePageSize}`);
   }
 
-  searchRestaurantes(theKeyword: string): Observable<Restaurante[]> {
-// creamos la url con la palabra clave
-    const searchUrl = `${this.baseUrl}/search/findByNombreContaining?nombre=${theKeyword}`;
-    return this.getRestaurantes(searchUrl);
+  getRestauranteListCatPaginate(
+    thePage: number,
+    thePageSize: number,
+    laCategoria: number): Observable<GetResponsePag> {
+    const urlCat = this.baseURL +
+      '/search/findByCategoriaId?id=' + laCategoria +
+      '&page=' + thePage + '&size=' + thePageSize;
+    return this.http.get<GetResponsePag>(urlCat);
   }
-  private getRestaurantes(searchUrl: string): Observable<Restaurante[]> {
-    return this.http.get<GetResponse>(searchUrl).pipe(
-      map((response: any) => response._embedded.restaurantes)
-    );
-  }
-
-  // http://localhost:8080/api/restaurantes/2/comentariosRest
-  getComentariosRestaurante(restauranteId: number):
-    Observable<ComentarioRest[]> {
-    const comentariosRestUrl =
-      `${this.baseUrl}/${restauranteId}/comentariosRest`;
-    return this.http.get<GetResponseComentarios>(comentariosRestUrl).pipe(
-      map((response: any) => response._embedded.comentariosRest)
-    );
-  }
-
 
   getCategoriasRestaurante(): Observable<RestauranteCategoria[]> {
-    const catUrl = 'http://localhost:8080/api/categorias';
-    return this.http.get<GetResponseCategoria>(catUrl).pipe(
+    const urlCat = 'http://localhost:8080/api/categorias';
+    return this.http.get<GetResponseCategoria>(urlCat).pipe(
       map((response: any) => response._embedded.categorias)
     );
   }
 
+  searchRestaurantesPaginate(
+    thePage: number,
+    thePageSize: number,
+    theKeyword: string): Observable<GetResponsePag> {
+    // montamos la url con la palabra a buscar
+    const searchUrl =
+      `${this.baseURL}/search/findByNombreContaining?nombre=${theKeyword}&page=${thePage}&size=${thePageSize}`;
 
-  getRestaurante(restauranteId: number): Observable<Restaurante>{
-    const restauranteUrl = `${this.baseUrl}/${restauranteId}`;
-
-    return this.http.get<Restaurante>(restauranteUrl);
-  }
-
-
-  getPlatosRestaurante(restauranteID: number): Observable<PlatoRestuarante[]>{
-
-    const platosResturanteURL = `${this.baseUrl}/${restauranteID}/platosRestaurante`;
-    return this.http.get<GetResponsePlatoRestaurante>(platosResturanteURL).pipe(
-      map( (response: any) => response._embedded.platosRestaurante )    );
-  }
-
-  getImagenesRestaurante(restauranteID: number ): Observable<ImgRestaurante[]>{
-    const imagenesRestUrl = `${this.baseUrl}/${restauranteID}/imgsRestaurante`;
-    // ojo si falla la url imgRestaurante sin s
-    return this.http.get<GetResponseImagenes>( imagenesRestUrl).pipe(
-      map( ( response: any) =>    response._embedded.imgRestaurante ) );
-  }
-
-
-  getRestauranteListPaginate(thePage: number, thePageSize: number): Observable<GetResponse> {
-    return this.http.get<GetResponse>(`${this.baseUrl}?page=${thePage}&size=${thePageSize}` );
-  }
-  getRestauranteListCatPaginate(thePage: number, thePageSize: number, theCategoriaId: number): Observable<GetResponse> {
-    const url =  `${this.baseUrl}/search/findByCategoriaId?id=${theCategoriaId}&page=${thePage}&size=${thePageSize}`;
-    return this.http.get<GetResponse>(url);
-  }
-
-
-  searchRestaurantesPaginate(thePage: number, thePageSize: number, theKeyWord: string): Observable<GetResponsePag> {
-    const searchUrl = `${this.baseUrl}/search/findByNombreContaining?nombre=${theKeyWord}&page=${thePage}&size=${thePageSize}`;
-    // incompleto el searchURL
     return this.http.get<GetResponsePag>(searchUrl);
   }
 
-  getHorariosRestaurante(restauranteId: number): Observable<Horario[]> {
-    const horariosUrl = `${this.baseUrl}/${restauranteId}/horarios`;
-    return this.http.get<GetResponseHorarios>(horariosUrl).pipe(
-      map((response: any) => response._embedded.horarios)
+  searchRestaurantes(theKeyword: string): Observable<Restaurante[]> {
+    // montamos la url con la palabra a buscar
+    const searchUrl =
+      `${this.baseURL}/search/findByNombreContaining?nombre=${theKeyword}`;
+
+    return this.getRestaurantes(searchUrl);
+  }
+
+  getCategoria(
+    idRestaurante: number
+  ): Observable<RestauranteCategoria> {
+    const catURL =
+      `${this.baseURL}/${idRestaurante}/categoria`;
+    return this.http.get<RestauranteCategoria>(catURL);
+  }
+
+  getComentariosRestaurante(
+    restauranteId: number
+  ): Observable<ComentarioRest[]> {
+    const comRestURL =
+      `${this.baseURL}/${restauranteId}/comentariosRest`;
+    return this.http.get<GetResponseComentarios>(
+      comRestURL
+    ).pipe(map((response: any) =>
+      response._embedded.comentariosRest
+    ));
+  }
+
+
+
+  getRestaurante(
+    restauranteID: number): Observable<Restaurante>{
+    const restURL = `${this.baseURL}/${restauranteID}`;
+    return this.http.get<Restaurante>(restURL);
+  }
+
+  getPlatosRestaurante(restauranteID: number):
+    Observable<PlatoRestaurante[]> {
+    const platosRestauranteURL =
+      `${this.baseURL}/${restauranteID}/platosRestaurante`;
+    return this.http
+      .get<GetResponsePlatoRestaurante>(platosRestauranteURL)
+      .pipe(map((response: any) =>
+        response._embedded.platosRestaurante));
+  }
+
+  getImagenesRestaurante(restauranteID: number): Observable<ImgRestaurante[]> {
+    const imagenesRestUrl = `${this.baseURL}/${restauranteID}/imgsRestaurante`;
+    return this.http.get<GetResponseImagenes>(imagenesRestUrl)
+      .pipe(map((response: any) =>
+        response._embedded.imgRestaurante));
+  }
+  getHorariosRestaurante(restauranteID: number): Observable<Horario[]> {
+    const horariosRestUrl = `${this.baseURL}/${restauranteID}/horarios`;
+    return this.http.get<GetResponseHorarios>(horariosRestUrl)
+      .pipe(map((response: any) =>
+        response._embedded.horarios));
+  }
+
+  postComentario(restaurante: Restaurante, comentario: ComentarioRest): any {
+    console.log(restaurante);
+    return this.http.post(
+      `http://localhost:8080/api/comentariosRest/add`,
+      {comentario, restaurante},
+      {headers: {'Accept': 'application/json', 'Content-Type': 'application/json'}});
+  }
+
+  // tslint:disable-next-line:typedef
+  private getRestaurantes(searchUrl: string) {
+    return this.http.get<GetResponse>(searchUrl).pipe(
+      map((response: any) =>
+        response._embedded.restaurantes)
     );
   }
 
-
-  postComentario(restaurante: Restaurante, comentario: ComentarioRest): any{
-    return this.http.post(`http://localhost:8080/api/comentariosRest/add`,
-      {comentario, restaurante});
-  }
-
 }
 
-
-
-// defino la intergaz con la informaciónq ue viene d ela api rest
-interface GetResponseCategoria {
-  _embedded: {
-    categorias: RestauranteCategoria[];
-  };
-}
-
-
-interface  GetResponse{
+// defino la interfaz con la información que viene de la API REST
+interface GetResponse {
   _embedded: {
     restaurantes: Restaurante[];
   };
 }
-// defino la intergaz con la informaciónq de categorias
-interface  GetResponseCategoria{
-  _embedded: {
-    categorias: RestauranteCategoria[];
-  };
-}
-// interfaz de comentarios de Restaurante
-interface GetResponseComentarios{
-  _embedded: {
-    comentariosRest: ComentarioRest[];
-  };
-}
-// interfaz de plato restaurante
-interface GetResponsePlatoRestaurante {
-  _embedded: {
-    platosRestaurante: PlatoRestuarante[];
-  };
-}
-
-
+// defino la interfaz con la información que viene de la API REST
 interface GetResponsePag {
   _embedded: {
     restaurantes: Restaurante[];
@@ -203,16 +168,31 @@ interface GetResponsePag {
     number: number
   };
 }
-
+// defino la interfaz con la información de categorias
+interface GetResponseCategoria {
+  _embedded: {
+    categorias: RestauranteCategoria[];
+  };
+}
+interface GetResponseComentarios {
+  _embedded: {
+    comentariosRest: ComentarioRest[];
+  };
+}
+interface GetResponsePlatoRestaurante {
+  _embedded: {
+    platosRestaurante: PlatoRestaurante[];
+  };
+}
 
 interface GetResponseImagenes {
   _embedded: {
     imgRestaurante: ImgRestaurante[];
   };
 }
-
 interface GetResponseHorarios {
   _embedded: {
     horarios: Horario[];
   };
 }
+

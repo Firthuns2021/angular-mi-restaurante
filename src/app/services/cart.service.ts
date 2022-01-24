@@ -22,9 +22,8 @@ export class CartService {
     if (this.cartItems.length > 0) {
 // buscamos si existe el plato en el carro basandonos en el id
 // find busca el primer elemento en un array que valide la condición
-      existingCartItem = this.cartItems.find(  tempCartItem => tempCartItem.platoRestaurante.id ===
-                                                               theCartItem.platoRestaurante.id &&
-                      (JSON.stringify(tempCartItem.extraPedido) ===       JSON.stringify(theCartItem.extraPedido)   )    );
+      existingCartItem = this.cartItems.find( tempCartItem => tempCartItem.platoRestaurante.id === theCartItem.platoRestaurante.id
+        &&         (JSON.stringify(tempCartItem.extraPedido) ===  JSON.stringify(theCartItem.extraPedido)  )   );
     }
 // comprobamos si lo hemos encontrado
     alreadyExistsInCart = (existingCartItem !== undefined);
@@ -47,6 +46,7 @@ export class CartService {
     else {
 // si es otro restaurante reseteamos el carrito antes de añadir platos
       if (rest !== this.restauranteOn) {
+        this.restauranteOn = rest;
         this.cartItems = [];
         this.totalQuantity.next(0);
         this.totalPrice.next(0);
@@ -58,8 +58,7 @@ export class CartService {
     let totalPriceValue = 0;
     let totalQuantityValue = 0;
     for (const currentCartItem of this.cartItems) {
-      totalPriceValue += currentCartItem.cantidad *
-        currentCartItem.precioTotal;
+      totalPriceValue += currentCartItem.cantidad * currentCartItem.precioTotal;
       totalQuantityValue += currentCartItem.cantidad;
     }
 // publicamos los nuevos valores... todos los subscriptores recibirán la nueva  información

@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, OnInit, ViewChildren} from '@angular/core';
 import {Restaurante} from '../../common/restaurante';
 import {RestauranteService} from '../../services/restaurante.service';
 import {ActivatedRoute} from '@angular/router';
@@ -27,14 +27,16 @@ export class RestauranteDetalleComponent implements OnInit {
     puntuacion: [0],
     comentario: ['']
   });
-  dias = ['Lunes',"Martes","Miércoles","Jueves","Viernes","Sábado","Domingo"];
+  dias = ['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado', 'Domingo'];
 
+  extras: {nombre: string, coste: number}[] = [];
+  @ViewChildren('miExtra') extra: any;
   constructor(
     private restauranteService: RestauranteService,
     private activatedRoute: ActivatedRoute,
     private formBuilder: FormBuilder,
     private cartService: CartService
-  ) { }
+              ) { }
 
   ngOnInit(): void {
     this.activatedRoute.paramMap.subscribe(() => {
@@ -64,42 +66,43 @@ export class RestauranteDetalleComponent implements OnInit {
     this.restauranteService.getRestaurante(restauranteID)
       .subscribe((data: any) => {
         this.restaurante = data;
-      })
+      });
   }
 
-  private handlePlatos(restauranteID: number) {
+  private handlePlatos(restauranteID: number): void {
     this.restauranteService.getPlatosRestaurante(restauranteID)
       .subscribe((data: any) => {
         this.platosRestaurante = data;
         this.restaurante.platosRestaurante = this.platosRestaurante;
-      })
+      });
   }
 
-  private handleImagenes(restauranteID: number) {
+  private handleImagenes(restauranteID: number): void {
     this.restauranteService.getImagenesRestaurante(restauranteID)
       .subscribe((data: any) => {
         this.imagenes = data;
-      })
+      });
   }
 
 
-  private handleComentarios(restauranteID: number) {
+  private handleComentarios(restauranteID: number): void {
     this.restauranteService.getComentariosRestaurante(restauranteID)
       .subscribe((data: any) => {
         this.restaurante.comentarios = data;
         this.CalcularMediaComentarios(this.restaurante);
-      })
+      });
   }
-  private handleHorarios(restauranteID: number) {
+  private handleHorarios(restauranteID: number): void {
     this.restauranteService.getHorariosRestaurante(restauranteID)
       .subscribe((data: any) => {
         this.restaurante.horarios = data;
         this.horarios = data;
         this.CalcularMediaComentarios(this.restaurante);
-      })
+      });
   }
 
-  private CalcularMediaComentarios(restaurante: Restaurante) {
+  // tslint:disable-next-line:typedef
+  private CalcularMediaComentarios(restaurante: Restaurante): void {
     let aux = 0;
 
     if (restaurante.comentarios.length > 0) {
@@ -110,11 +113,31 @@ export class RestauranteDetalleComponent implements OnInit {
       );
       restaurante.puntuacionMedia =
         aux / restaurante.comentarios.length;
-    } else { restaurante.puntuacionMedia = 0}
+    } else { restaurante.puntuacionMedia = 0 ; }
   }
 
-  addToCart(plato: PlatoRestaurante) {
+  addToCart(plato: PlatoRestaurante): void {
     const elPlatoPedido = new PlatoPedido(plato);
-    this.cartService.addToCartRest(elPlatoPedido,this.restaurante);
+    elPlatoPedido.extraPedido = this.extras;
+    let totalExtras = 0.0;
+    elPlatoPedido.extraPedido.forEach((extra) => {
+      totalExtras += extra.coste;
+    });
+    elPlatoPedido.precioTotal =  elPlatoPedido.platoRestaurante.precioBase + totalExtras;
+    this.cartService.addToCartRest(elPlatoPedido, this.restaurante);
+    this.extras = [];
+  }
+
+  OnCheckboxSelect(extra: { nombre: string; coste: number }, event: any): void {
+    if (event.target.checked === true) {
+      this.extras.push(extra);
+    } else{
+      this.extras = this.extras.filter((data) => data.nombre !== extra.nombre);
+    }
+  }
+
+  addToCartForm(plato: PlatoRestaurante, miForm: HTMLFormElement): void{
+    miForm.reset();
+    this.addToCart(plato);
   }
 }

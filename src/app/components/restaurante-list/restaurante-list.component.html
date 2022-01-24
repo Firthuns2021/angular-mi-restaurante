@@ -1,42 +1,42 @@
 <div class="container-fluid" *ngIf="restaurantes.length > 0">
-  <h4 class="mt-2">{{ restaurantes.length}} restaurantes abiertos</h4>
-  <div class="container pointer" *ngFor="let restaurante of restaurantes"
+  <h4 class="mt-2">
+    {{theTotalElements}} restaurantes abiertos
+  </h4>
+  <div class="container pointer"
        routerLink="/restaurantes/{{restaurante.id}}"
-      >
-
+       *ngFor="let restaurante of restaurantes">
     <div class="mt-3">
-      <div class="row border rounded">
-        <div class="mt-3"></div>
+    <div class="row border rounded pt-3">
         <div class="col-md-2">
           <img src="{{restaurante.imgLogo}}" alt="{{restaurante.nombre}}">
         </div>
         <div class="col-md-7">
           <h5>{{restaurante.nombre}}</h5>
-<!--          <p class="text-danger">{{ restaurante.categoria?.categoria }}</p>-->
+          <p class="text-danger">{{restaurante.categoria?.categoria}}</p>
         </div>
         <div class="col-md-3 align-middle">
-          <small>{{restaurante.comentarios?.length}} comentarios </small>
+          <small>{{restaurante.comentarios?.length}} comentarios</small>
           <small class="badge bg-success p-2">
             {{restaurante.puntuacionMedia}}
           </small>
         </div>
         <div class="pb-2"></div>
       </div>
+      <div class="mb-2"></div>
     </div>
-
   </div>
 </div>
-
-
-<div class="container-fliud-mt-5" *ngIf="restaurantes?.length ==0">
-
+<!-- Si no hay restaurantes, mostramos una alerta -->
+<div class="container-fluid mt-5"
+     *ngIf="theTotalElements == 0">
   <div class="alert alert-warning col-md-12" role="alert">
-    No hemos encontrado restaurante con ese nombre
+    No hemos encontrado restaurantes con ese nombre
   </div>
+
 </div>
 
 <div class="row">
-  <div class="col-md-6 offset-6">
+  <div class="col-md-4 offset-6">
     <ngb-pagination [(page)]="thePageNumber"
                     [pageSize]="thePageSize"
                     [collectionSize]="theTotalElements"
@@ -46,10 +46,10 @@
   <div class="col-md-2">
     <span class="me-2">Page Size</span>
     <select (change)="updatePageSize($event)">
-      <option value="5" selected="selected">5</option>
+      <option value="2">2</option>
+      <option value="5">5</option>
       <option value="10">10</option>
       <option value="20">20</option>
-      <option value="50">50</option>
     </select>
   </div>
 

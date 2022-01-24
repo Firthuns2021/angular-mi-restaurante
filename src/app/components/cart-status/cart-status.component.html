@@ -1,10 +1,12 @@
 <div class="container">
   <h5 class="p3 m3">
-    Pedido</h5>
+    Pedido
+  </h5>
   <h6>
     <i class="fas fa-shopping-cart"></i>
-    {{ totalQuantity }} platos - Total: <span class="text-info">{{ totalPrice |
-    currency: 'EUR' }}</span>
+    {{ totalQuantity }} platos - Total: <span class="text-info">
+    {{ totalPrice | currency: 'EUR' }}
+  </span>
   </h6>
   <div class="scroll">
     <table class="table table-bordered table-sm">
@@ -15,24 +17,22 @@
       <tr *ngFor="let plato of cartItems">
         <td>
           <p>{{plato.platoRestaurante.nombre}} <br>
-            <small>Extras: ( <span *ngFor="let extra of
-plato.extraPedido">{{extra.nombre}} </span>)</small></p>
-          <p class="text-info">{{plato.precioTotal | currency: 'EUR'}}</p>
+            <small>Extras: ( <span *ngFor="let extra of plato.extraPedido">{{extra.nombre}} </span>)</small> </p>
+          <p>{{plato.platoRestaurante.precioBase | currency: 'EUR' }}</p>
         </td>
-
         <td>
           <label>Cantidad:</label>
           <div class="row">
-            <div class="col">
-              <button (click)="incrementQuantity(plato)" class="btn btn-primary btn-sm">
+            <div class="col-3">
+              <button class="btn btn-primary btn-sm" (click)="incrementQuantity(plato)">
                 <i class="fas fa-plus"></i>
               </button>
             </div>
-            <div class="col">
+            <div class="col-3">
               {{plato.cantidad}}
             </div>
-            <div class="col">
-              <button (click)="decrementQuantity(plato)" class="btn btn-primary btn-sm">
+            <div class="col-3">
+              <button class="btn btn-primary btn-sm" (click)="decrementQuantity(plato)">
                 <i class="fas fa-minus"></i>
               </button>
             </div>
@@ -45,14 +45,10 @@ plato.extraPedido">{{extra.nombre}} </span>)</small></p>
           <p>Subtotal: {{ plato.precioTotal * plato.cantidad | currency: 'EUR'
             }}</p>
         </td>
-
-
       </tr>
     </table>
-
     <div *ngIf="cartItems.length > 0" class="d-grid gap-2">
       <button class="btn btn-warning" routerLink="/checkout">Pagar</button>
     </div>
-
   </div>
 </div>
