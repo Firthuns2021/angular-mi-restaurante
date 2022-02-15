@@ -6,6 +6,10 @@ import {RestauranteFormService} from '../../services/restaurante-form.service';
 import {Pais} from '../../common/pais';
 import {Provincia} from '../../common/provincia';
 import {FormValidators} from '../../validators/form-validators';
+import {Compra} from '../../common/compra';
+import {Pedido} from '../../common/pedido';
+import {Router} from '@angular/router';
+import {CheckoutService} from '../../services/checkout.service';
 
 @Component({
   selector: 'app-checkout',
@@ -163,7 +167,11 @@ export class CheckoutComponent implements OnInit {
   // Creamos arrays separados de provincias para envío y facturación
   shippingAddressProvincias: Provincia[] = [];
   billingAddressProvincias: Provincia[] = [];
-constructor(private formBuilder: FormBuilder, private cartService: CartService, private restauranteFormService: RestauranteFormService) { }
+constructor(private formBuilder: FormBuilder,
+            private cartService: CartService,
+            private restauranteFormService: RestauranteFormService,
+            private router: Router,
+            private checkoutService: CheckoutService ) { }
   ngOnInit(): void {
     this.updateCartStatus();
     // poblamos los meses de la tarjeta de crédito
@@ -189,9 +197,62 @@ constructor(private formBuilder: FormBuilder, private cartService: CartService, 
   }
 
   onSubmit(): void {
+    console.log(this.checkoutFormGroup.getRawValue());
     if (this.checkoutFormGroup.invalid) {
       this.checkoutFormGroup.markAllAsTouched();
+      return;
     }
+// crear pedido
+    const pedido = new Pedido();
+    pedido.precioTotal = this.totalPrice;
+// coger los items del carrito
+    const cartItemsList = this.cartService.cartItems;
+// ??create ordereITems from cartItems
+    pedido.platosPedido = cartItemsList;
+// crear compra
+    const compra = new Compra();
+// rellenar compra - cliente
+    compra.cliente = this.checkoutFormGroup.controls.cliente.value;
+// rellenar restaurante
+    compra.restaurante = this.cartService.restauranteOn;
+// rellenar compra - direcciones
+// Entrega
+    compra.direccionEntrega =
+      this.checkoutFormGroup.controls.shippingAddress.value;
+    const provinciaEntrega =
+      JSON.parse(JSON.stringify(compra.direccionEntrega.provincia));
+    const paisEntrega: Pais =
+      JSON.parse(JSON.stringify(compra.direccionEntrega.pais));
+    compra.direccionEntrega.provincia = provinciaEntrega;
+    compra.direccionEntrega.pais = paisEntrega.name;
+// Factura
+    compra.direccionFactura =
+      this.checkoutFormGroup.controls.billingAddress.value;
+    const provinciaFactura =
+      JSON.parse(JSON.stringify(compra.direccionFactura.provincia));
+    const paisFactura: Pais =
+      JSON.parse(JSON.stringify(compra.direccionFactura.pais));
+    compra.direccionFactura.provincia = provinciaFactura;
+    compra.direccionFactura.pais = paisFactura.name;
+// rellenar compra - pedido y platos pedido
+    compra.pedido = pedido;
+    compra.platoPedidos = cartItemsList;
+
+// llamar a la API REST mediante el Servicio
+    this.checkoutService.realizarCompra(compra).subscribe(
+      {
+        next: response => {
+          alert(`La orden ha sido recibida. \nNúmero de localizador:
+${response.orderTrackingNumber}`);
+// reseteamos el carrito
+        },
+        error: err => {
+          alert(`Ha habido un error: ${err.message}`);
+          this.resetCart();
+        }
+      }
+    );
+
   }
 
   copyShippingToBilling(event: any): void {
@@ -272,5 +333,18 @@ constructor(private formBuilder: FormBuilder, private cartService: CartService, 
         }
       );
     }
+  }
+
+
+  resetCart(): void {
+// resetear los datos del carro, el precio total y la cantidad de
+    // elementos
+    this.cartService.cartItems = [];
+    this.cartService.totalPrice.next(0);
+    this.cartService.totalQuantity.next(0);
+// resetear el formulario
+    this.checkoutFormGroup.reset();
+// navegamos a la página principal
+    this.router.navigateByUrl('/');
   }
 }

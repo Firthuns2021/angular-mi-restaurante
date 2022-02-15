@@ -13,8 +13,24 @@ import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import {ReactiveFormsModule} from '@angular/forms';
 import { CartStatusComponent } from './components/cart-status/cart-status.component';
 import { CheckoutComponent } from './components/checkout/checkout.component';
+import { LoginComponent } from './components/login/login.component';
+import { LoginStatusComponent } from './components/login-status/login-status.component';
 
 
+import {
+  OKTA_CONFIG,
+  OktaAuthModule
+} from '@okta/okta-angular';
+import { OktaAuth } from '@okta/okta-auth-js';
+import myAppConfig from './config/my-app-config';
+import {Router} from '@angular/router';
+const oktaConfig = Object.assign({
+  onAuthRequired: (oktaAuth: any, injector: any) => {
+    const router = injector.get(Router);
+// redirigimos al usuario a la página de login
+    router.navigate(['/login']);
+  }
+}, myAppConfig.oidc);
 
 @NgModule({
   declarations: [
@@ -26,18 +42,22 @@ import { CheckoutComponent } from './components/checkout/checkout.component';
     RestauranteDetalleComponent,
     CartStatusComponent,
     CheckoutComponent,
+    LoginComponent,
+    LoginStatusComponent,
 
   ],
   imports: [
     BrowserModule,
     AppRoutingModule,
     HttpClientModule,
-
     NgbModule,
     ReactiveFormsModule,
-
+    FormsModule,
+    OktaAuthModule
   ],
-  providers: [],
+  providers: [
+    { provide: OKTA_CONFIG, useValue: oktaConfig},
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

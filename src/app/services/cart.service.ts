@@ -7,13 +7,26 @@ import {BehaviorSubject, Subject} from 'rxjs';
   providedIn: 'root'
 })
 export class CartService {
+
+  storage: Storage = sessionStorage;
   cartItems: PlatoPedido[] = [];
   restauranteOn: Restaurante = new Restaurante();
 // Subject para enviar un observable a los suscriptores
   myCart: Subject<PlatoPedido[]> = new BehaviorSubject<PlatoPedido[]>([]);
   totalPrice: Subject<number> = new BehaviorSubject<number>(0);
   totalQuantity: Subject<number> = new BehaviorSubject<number>(0);
-  constructor() { }
+  constructor() {
+    // leemos la información del storage
+// JSON.parse nos transforma un string JSON en un objeto
+    const data = JSON.parse(this.storage.getItem('cartItems')as
+      string);
+    if(data != null) {
+// si la información no es null, la guardamos en nuestro carrito
+      this.cartItems = data;
+// calculamos los totales basado en la información del storage
+      this.computeCartTotals();
+    }
+  }
 
   addToCart(theCartItem: PlatoPedido): void {
 // verificamos si está el plato en el carro ya
@@ -58,13 +71,19 @@ export class CartService {
     let totalPriceValue = 0;
     let totalQuantityValue = 0;
     for (const currentCartItem of this.cartItems) {
-      totalPriceValue += currentCartItem.cantidad * currentCartItem.precioTotal;
+
+      totalPriceValue += currentCartItem.cantidad *
+
+        currentCartItem.precioTotal;
       totalQuantityValue += currentCartItem.cantidad;
     }
-// publicamos los nuevos valores... todos los subscriptores recibirán la nueva  información
+// publicamos los nuevos valores... todos los subscriptores  recibirán la nueva información
     this.totalPrice.next(totalPriceValue);
     this.totalQuantity.next(totalQuantityValue);
     this.myCart.next(this.cartItems);
+// persistimos la información de nuestro carrito
+// llamando a la función persistCartItems
+    this.persistCartItems();
   }
 
   decrementQuantity(plato: PlatoPedido): void {
@@ -88,4 +107,10 @@ export class CartService {
       this.computeCartTotals();
     }
   }
+  persistCartItems(): void {
+// guardamos el carrito en el storage
+// JSON.stringify transforma un objeto en un string JSON
+    this.storage.setItem('cartItems', JSON.stringify(this.cartItems));
+  }
+
 }
